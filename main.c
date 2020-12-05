@@ -51,7 +51,7 @@ typedef struct apartmentNode
 	Apartment *apt;
 	// references
 	struct apartmentNode *next;
-	 struct apartmentNode *prev;
+	struct apartmentNode *prev;
 } ApartmentNode;
 
 typedef struct apartmentList
@@ -72,7 +72,12 @@ typedef struct longTermHistoryList
 	CommandNode *tail;
 } LongTermHistoryList;
 
-void splitPromptToCommandAndArguments(char* prompt,char** pCommand,char** pArguments);
+void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments);
+char * getInput();
+void* ver_malloc(size_t size);
+void* ver_realloc(void *data, size_t size);
+void verifyAllocation(void *arr);
+
 void main()
 {
 	//read appartemnt from fille ,read history from file
@@ -84,24 +89,23 @@ void main()
 
 	char *input;
 	input = getInput(); // get first prompt
-	while (!(strcmp(input, EXIT))) // run until exit
+	while (strcmp(input, EXIT) != 0) // run until exit
 	{
 		/*
 		separate to command and arguments
 		run wanted command according to arguments
 		save prompt if command needs to be saved
 		*/
-		command, arguments = splitPromptToCommandAndArguments(input);
+		char *command, *arguments;
+		splitPromptToCommandAndArguments(input, &command, &arguments);
 		if (strcmp(command, HISTORY))
 			printHistory();
 		else if (strcmp(command, SHORT_HISTORY))
 			printShortHistory();
 		else if (strcmp(command, LAST_COMMAND))
 			printLastCommand();
-		else if (command == "!<num>")
-			printCommandNumber();
-		else if (command == "!<num>^str1^str2")
-			printCommandNumberWithReplace();
+		else if (command[0] == '!')
+			printCommandNumber(command, arguments);
 		else  // command is one of: find-apt, add-apt, buy-apt, delete-apt
 		{
 			if (strcmp(command, FIND_APT))
@@ -114,9 +118,9 @@ void main()
 				deleteApt(arguments);
 			addPromptToDatabase(input);
 		}
+		free(command); // this also frees arguments memory
 		input = getInput();  // get next prompt
 	}
-
 	// end of program
 	writeToPromtsTextFile();
 	writeToApartmentsBinaryFile();
@@ -126,16 +130,43 @@ void main()
 
 void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments)
 {
-	
+	char *command = (char *)ver_malloc(sizeof(char) * (strlen(prompt) + 1));
+	strcpy(command, prompt);
+
+	if (prompt[0] == '!') // parse prompt regarding running previous commands: !!, !<num>, !<num>^str1^str2
+	{
+		if (prompt[1] == '!') // case of !!
+			*pArguments = NULL;
+		else
+		{
+			char *hat = strchr(command, '^');
+			if (hat == NULL)  // no hat in command - case of !<num>
+				*pArguments = NULL;
+			else // hat found - case of !<num>^str1^str2
+			{
+				*hat = '\0';
+				*pArguments = hat + 1;
+			}
+		}
+	}
+	else // parse prompt regarding commands: find-apt, add-apt, buy-apt, delete-apt, history, short_history
+	{
+		char *whitespace = strchr(command, ' ');
+		if (whitespace == NULL)  // no whitespace in command - one of: history, short_history
+			*pArguments = NULL;
+		else // whitespace found - one of: find-apt, add-apt, buy-apt, delete-apt
+		{
+			*whitespace = '\0';
+			*pArguments = whitespace + 1;
+		}
+	}
+	*pCommand = command;
 }
-
-
 
 /*
 * Reads a line of unknown length from stdin, until a new-line is given (\n char).
 * Returns the line as a string
 */
-
 char * getInput()
 {
 	unsigned int allocSize = BUFFER_SIZE, length = 0;
@@ -149,7 +180,7 @@ char * getInput()
 		input[length++] = ch;
 		if (length == allocSize)
 		{
-			allocSize *=2; // increase allocation size
+			allocSize *= 2; // increase allocation size
 			input = (char *)ver_realloc(input, allocSize * sizeof(char));
 		}
 		scanf("%c", &ch);
