@@ -51,8 +51,7 @@ typedef struct apartmentNode
 	Apartment *apt;
 	// references
 	struct apartmentNode *next;
-	// TODO: decide if we want double-linked list
-	// struct apartmentNode *prev;
+	 struct apartmentNode *prev;
 } ApartmentNode;
 
 typedef struct apartmentList
@@ -73,8 +72,10 @@ typedef struct longTermHistoryList
 	CommandNode *tail;
 } LongTermHistoryList;
 
+void splitPromptToCommandAndArguments(char* prompt,char** pCommand,char** pArguments);
 void main()
 {
+	//read appartemnt from fille ,read history from file
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
 	puts("add - apt, find - apt, buy - apt, delete - apt or exit");
@@ -123,10 +124,18 @@ void main()
 	puts("Good Bye!");
 }
 
+void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments)
+{
+	
+}
+
+
+
 /*
 * Reads a line of unknown length from stdin, until a new-line is given (\n char).
 * Returns the line as a string
 */
+
 char * getInput()
 {
 	unsigned int allocSize = BUFFER_SIZE, length = 0;
@@ -140,7 +149,7 @@ char * getInput()
 		input[length++] = ch;
 		if (length == allocSize)
 		{
-			allocSize += BUFFER_SIZE; // increase allocation size
+			allocSize *=2; // increase allocation size
 			input = (char *)ver_realloc(input, allocSize * sizeof(char));
 		}
 		scanf("%c", &ch);
