@@ -4,16 +4,15 @@ IDs: 318598380, 204363451
 
 Course's final project - console application to manage real estate apartments
 */
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
 #include <string.h>
+#include "memoryUtils.h"
+#include "apartment.h"
+#include "history.h"
 
-#define SHORT_TERM_HISTROY_SIZE 7
 #define BUFFER_SIZE 50
 
 /* commands */
@@ -26,61 +25,21 @@ Course's final project - console application to manage real estate apartments
 #define LAST_COMMAND "!!"
 #define SHORT_HISTORY "short_history"
 #define HISTORY "history"
-// run command number: !<num>
-// run command number and replace str1 with str2: !<num>^str1^str2
-
-/* data structs */
-
-char *shortTermHistory[SHORT_TERM_HISTROY_SIZE];
-
-typedef struct apartment
-{
-	unsigned int id;
-	char *address;
-	int price;
-	short int numRooms;
-	short int entryDay;
-	short int entryMonth;
-	short int entryYear;
-	time_t dbEntryDate;
-} Apartment;
-
-typedef struct apartmentNode
-{
-	// data
-	Apartment *apt;
-	// references
-	struct apartmentNode *next;
-	struct apartmentNode *prev;
-} ApartmentNode;
-
-typedef struct apartmentList
-{
-	ApartmentNode *head;
-	ApartmentNode *tail;
-} ApartmentList;
-
-typedef struct commandNode
-{
-	char *command; // data is commands string
-	struct commandNode *next;
-} CommandNode;
-
-typedef struct longTermHistoryList
-{
-	CommandNode *head;
-	CommandNode *tail;
-} LongTermHistoryList;
 
 void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments);
-char * getInput();
-void* ver_malloc(size_t size);
-void* ver_realloc(void *data, size_t size);
-void verifyAllocation(void *arr);
+void splitCommandAndArgumentsByToken(char* command, char** pArguments, char token);
+char* getInput();
+
 
 void main()
 {
+	char *shortTermHistory[SHORT_TERM_HISTROY_SIZE];
+	ApartmentList aptsList;
+	makeEmptyApartmentList(&aptsList);
 	//read appartemnt from fille ,read history from file
+	readApartmentsFromBinaryFile(&aptsList);
+	readCommandHistoryFromFile();
+
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
 	puts("add - apt, find - apt, buy - apt, delete - apt or exit");
@@ -124,43 +83,43 @@ void main()
 	// end of program
 	writeToPromtsTextFile();
 	writeToApartmentsBinaryFile();
-	freeMemory();
+	freeMemory(); // should also free input string
 	puts("Good Bye!");
 }
 
+/*
+* Splits a given prompt to it's command and arguments. 
+* Puts the result in output paramteres pCommand and pArguments.
+* If the prompt is only a command, pArguments is set to NULL.
+* The function allocates memory for the command and arguments, and doesn't change given prompt
+*/
 void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments)
 {
 	char *command = (char *)ver_malloc(sizeof(char) * (strlen(prompt) + 1));
 	strcpy(command, prompt);
 
 	if (prompt[0] == '!') // parse prompt regarding running previous commands: !!, !<num>, !<num>^str1^str2
-	{
-		if (prompt[1] == '!') // case of !!
-			*pArguments = NULL;
-		else
-		{
-			char *hat = strchr(command, '^');
-			if (hat == NULL)  // no hat in command - case of !<num>
-				*pArguments = NULL;
-			else // hat found - case of !<num>^str1^str2
-			{
-				*hat = '\0';
-				*pArguments = hat + 1;
-			}
-		}
-	}
+		splitCommandAndArgumentsByToken(command, pArguments, '^');
 	else // parse prompt regarding commands: find-apt, add-apt, buy-apt, delete-apt, history, short_history
-	{
-		char *whitespace = strchr(command, ' ');
-		if (whitespace == NULL)  // no whitespace in command - one of: history, short_history
-			*pArguments = NULL;
-		else // whitespace found - one of: find-apt, add-apt, buy-apt, delete-apt
-		{
-			*whitespace = '\0';
-			*pArguments = whitespace + 1;
-		}
-	}
+		splitCommandAndArgumentsByToken(command, pArguments, ' ');
 	*pCommand = command;
+}
+
+/*
+* Split a command string by token delimiter. 
+* If token is found, pArguments output parameter is set to the string's remaining arguments after token.
+* Otherwise it's set to NULL
+*/
+void splitCommandAndArgumentsByToken(char* command, char** pArguments, char token)
+{
+	char *index = strchr(command, token);
+	if (index == NULL)  // token not in command
+		*pArguments = NULL;
+	else // token found in command - split to arguments
+	{
+		*index = '\0';
+		*pArguments = index + 1;
+	}
 }
 
 /*
@@ -189,40 +148,3 @@ char * getInput()
 	input = (char *)ver_realloc(input, length * sizeof(char)); // re-allocate according to exact string length
 	return input;
 }
-
-/*
-* Allocates memory using malloc, verifying allocation succeeded.
-* If allocation fails, prints an error message and exits the program
-*/
-void* ver_malloc(size_t size)
-{
-	void* res = malloc(size);
-	verifyAllocation(res);
-	return res;
-}
-
-/*
-* Re-allocates memory using realloc, verifying allocation succeeded.
-* If allocation fails, prints an error message and exits the program
-*/
-void* ver_realloc(void *data, size_t size)
-{
-	void* res = realloc(data, size);
-	verifyAllocation(res);
-	return res;
-}
-
-/*
-* verifies an array is allocated (not null).
-* throws error message and exits if array isn't allocated.
-* should be used after allocating new memory to a variable
-*/
-void verifyAllocation(void *arr)
-{
-	if (!arr)
-	{
-		printf("Memory allocation failed - exiting!");
-		exit(1);
-	}
-}
-
