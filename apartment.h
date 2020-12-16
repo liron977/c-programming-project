@@ -38,7 +38,7 @@ typedef struct apartmentList
 	ApartmentNode *tail;
 } ApartmentList;
 
-/***** Apartment functions ******/
+/***** APARTMENT FUNCTIONS ******/
 
 /*
 * Creates a new apartment.
@@ -56,7 +56,7 @@ void printApartment(Apartment *apt);
 void freeApartment(Apartment *apt);
 
 
-/***** ApartmentList functions ******/
+/***** APARTMENTLIST FUNCTIONS ******/
 
 /*
 * Creates an empty apartment list, given a list address

@@ -26,6 +26,8 @@ Course's final project - console application to manage real estate apartments
 #define SHORT_HISTORY "short_history"
 #define HISTORY "history"
 
+void runLastCommandFromHistory(History *historyDB);
+void runApartmentCommands(char *command, char *arguments, History *historyDB, char *prompt);
 void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments);
 void splitCommandAndArgumentsByToken(char* command, char** pArguments, char token);
 char* getInput();
@@ -33,12 +35,13 @@ char* getInput();
 
 void main()
 {
-	char *shortTermHistory[SHORT_TERM_HISTROY_SIZE];
 	ApartmentList aptsList;
+	History historyDB;
 	makeEmptyApartmentList(&aptsList);
+	makeEmptyHistory(&historyDB);
 	//read appartemnt from fille ,read history from file
-	readApartmentsFromBinaryFile(&aptsList);
-	readCommandHistoryFromFile();
+	readApartmentsFromBinaryFile(&aptsList); // TODO implement
+	readCommandHistoryFromFile(&historyDB); // TODO implement
 
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
@@ -57,34 +60,55 @@ void main()
 		*/
 		char *command, *arguments;
 		splitPromptToCommandAndArguments(input, &command, &arguments);
-		if (strcmp(command, HISTORY))
-			printHistory();
-		else if (strcmp(command, SHORT_HISTORY))
-			printShortHistory();
-		else if (strcmp(command, LAST_COMMAND))
-			printLastCommand();
-		else if (command[0] == '!')
-			printCommandNumber(command, arguments);
+		if (strcmp(command, HISTORY) == 0)
+			printHistory(&historyDB);
+		else if (strcmp(command, SHORT_HISTORY) == 0)
+			printShortTermHistory(&historyDB);
+		else if (strcmp(command, LAST_COMMAND) == 0)
+			runLastCommandFromHistory(&historyDB);
+		else if (command[0] == '!') // one of: !<num>, !<num>^str1^str2
+			runCommandNumberFromHistory(command, arguments, &historyDB);  // TODO implement
 		else  // command is one of: find-apt, add-apt, buy-apt, delete-apt
-		{
-			if (strcmp(command, FIND_APT))
-				findApt(arguments);
-			else if (strcmp(command, ADD_APT))
-				addApt(arguments);
-			else if (strcmp(command, BUY_APT))
-				buyApt(arguments);
-			else if (strcmp(command, DELETE_APT))
-				deleteApt(arguments);
-			addPromptToDatabase(input);
-		}
+			runApartmentCommands(command, arguments, &historyDB, input);
 		free(command); // this also frees arguments memory
 		input = getInput();  // get next prompt
 	}
 	// end of program
-	writeToPromtsTextFile();
-	writeToApartmentsBinaryFile();
-	freeMemory(); // should also free input string
+	writeToPromtsTextFile(); // TODO implement
+	writeToApartmentsBinaryFile(); // TODO implement
+	freeMemory(); // TODO implement - should also free input string
 	puts("Good Bye!");
+}
+
+/*
+* Gets the last prompt entered into a history database. If found, runs the prompt
+*/
+void runLastCommandFromHistory(History *historyDB)
+{
+	char *lastPrompt = getLastPrompt(historyDB), *command, *arguments;
+	if (lastPrompt != NULL)  // last prompt found
+	{
+		splitPromptToCommandAndArguments(lastPrompt, &command, &arguments);
+		runApartmentCommands(command, arguments, historyDB, lastPrompt);  // only apartments commands are kept in history
+		free(command);
+	}
+}
+
+/*
+* Runs a given apartment command according to arguments. Adds the prompt to the given history database 
+* Valid aparetment commands are: find-apt, add-apt, buy-apt, delete-apt
+*/
+void runApartmentCommands(char *command, char *arguments, History *historyDB, char *prompt)
+{
+	if (strcmp(command, FIND_APT) == 0)
+		findApt(arguments); // TODO implement
+	else if (strcmp(command, ADD_APT) == 0)
+		addApt(arguments); // TODO implement
+	else if (strcmp(command, BUY_APT) == 0)
+		buyApt(arguments); // TODO implement
+	else if (strcmp(command, DELETE_APT) == 0)
+		deleteApt(arguments); // TODO implement
+	addPromptToHistoryDatabase(historyDB, prompt);
 }
 
 /*
