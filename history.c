@@ -7,14 +7,18 @@ void makeEmptyHistory(History *history)
 	history->totalSize = 0;
 	history->shortTermHistoryIndex = 0;
 	makeEmptyShortHistoryArray(history->shortTermHistory);
-	makeEmptyHistoryList(history->longTermHistory);
+	LongTermHistoryList *lst = (LongTermHistoryList *)ver_malloc(sizeof(LongTermHistoryList));
+	makeEmptyHistoryList(lst);
+	history->longTermHistory = lst;
 }
 
 void addPromptToHistoryDatabase(History *history, char *prompt)
 {
+	char *copiedPrompt = (char*)ver_malloc(sizeof(char) * (strlen(prompt) + 1));
+	strcpy(copiedPrompt, prompt);
 	if (history->totalSize >= SHORT_TERM_HISTROY_SIZE) // replace older prompt in short history. add older prompt to long term list
 		insertDataToEndHistoryList(history->longTermHistory, history->shortTermHistory[history->shortTermHistoryIndex]);
-	history->shortTermHistory[history->shortTermHistoryIndex] = prompt;
+	history->shortTermHistory[history->shortTermHistoryIndex] = copiedPrompt;
 	history->shortTermHistoryIndex = (history->shortTermHistoryIndex + 1) % SHORT_TERM_HISTROY_SIZE;
 	history->totalSize = history->totalSize + 1;
 }
@@ -70,14 +74,14 @@ void printShortTermHistory(History *history)
 	{
 		// still not completed a full "loop" in short term history. Print only until index, which is number of commands in database
 		for (i = 0; i < history->shortTermHistoryIndex; i++)
-			printf("%d: %s", i + 1, history->shortTermHistory[i]);
+			printf("%d: %s\n", i + 1, history->shortTermHistory[i]);
 	}
 	else
 	{
 		// completed more than one "loop" in short term history, also has command in long term history
 		int longTermSize = history->longTermHistory->size;
 		for (i = 0; i < SHORT_TERM_HISTROY_SIZE; i++)
-			printf("%d: %s", longTermSize + i + 1, history->shortTermHistory[(history->shortTermHistoryIndex + i) % SHORT_TERM_HISTROY_SIZE]);
+			printf("%d: %s\n", longTermSize + i + 1, history->shortTermHistory[(history->shortTermHistoryIndex + i) % SHORT_TERM_HISTROY_SIZE]);
 	}
 }
 
@@ -148,7 +152,7 @@ void printHistoryList(LongTermHistoryList *lst)
 	LongTermHistoryNode *curr = lst->head;
 	for (i = 0; i < lst->size; i++)
 	{
-		printf("%d: %s", i + 1, curr->prompt);
+		printf("%d: %s\n", i + 1, curr->prompt);
 		curr = curr->next;
 	}
 }
@@ -162,6 +166,7 @@ void freeHistoryList(LongTermHistoryList *lst)
 		freeHistoryNode(curr);
 		curr = tmp;
 	}
+	free(lst); // long term list itself is also allocated memory
 }
 
 void freeHistoryNode(LongTermHistoryNode *node)
