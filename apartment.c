@@ -217,7 +217,7 @@ void removeApartmentFromListById(ApartmentList *lst, unsigned int id)
 
 void removeApartmentsFromListByEntryDate(ApartmentList *lst, int numDays)
 {
-	double diffInSeconds = (double)(numDays * 24 * 60 * 60); // days * hours * minuts * seconds
+	double diffInSeconds = (double)(numDays) * (double)(24 * 60 * 60); // days * hours * minuts * seconds
 	time_t currTime;
 	time(&currTime);
 
