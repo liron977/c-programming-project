@@ -1,13 +1,16 @@
 #ifndef __APARTMENT_H
 #define __APARTMENT_H
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <time.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "memoryUtils.h"
+
+
+
 
 #define DB_ENTRY_MAX_STRING_LENGTH 11 // xx.xx.xxxx\0
 
@@ -40,6 +43,23 @@ typedef struct apartmentList
 
 /***** APARTMENT FUNCTIONS ******/
 
+
+/*
+Remove from the apartment list all the apartment from the last days(according to dateNum)
+*/
+void deleteApt(int daysNum, ApartmentList* lst);
+
+/*
+Buy an apartment and remove it from the appartment list
+*/
+void buyApt(int codeApt, ApartmentList* lst);
+
+/*
+*Remove the first signal from the string 
+*/
+
+char* removeFirstSignal(char* arguments);
+
 /*
 * Creates a new apartment.
 */
@@ -54,6 +74,11 @@ void printApartment(Apartment *apt);
 * Frees the allocated memory of an apartment
 */
 void freeApartment(Apartment *apt);
+
+/*
+* Add a new apartment to the appartment list
+*/
+void addApt(char* arguments,ApartmentList* lst);
 
 
 /***** APARTMENTLIST FUNCTIONS ******/

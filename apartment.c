@@ -1,7 +1,69 @@
-#include "apartment.h"
+﻿#include "apartment.h"
+int apartmentCode = 0;
+#include <windows.h>
+void deleteApt(int daysNum, ApartmentList* lst)
+{
+	SYSTEMTIME t;
+	GetLocalTime(&t);
+	if (t.wDay - daysNum > 0)
+	{
 
+	}
+	else
+	{
+		if (((t.wDay - daysNum) / 30))
+		{
+
+		}
+	}
+}
+void buyApt(int codeApt,ApartmentList* lst)
+{
+	removeApartmentFromListById(lst, codeApt);
+}
+
+void splitApartmentDetails(char* address,char** details,char token)
+{
+
+	char* index = strchr(address, token);
+	if (index == NULL)  // token not in command
+		*details = NULL;
+	else // token found in command - split to arguments
+	{
+		*index = '\0';
+		*details = index + 1;
+	}
+}
+char* removeFirstSignal(char* arguments)
+{
+		char* p = malloc(sizeof(*p) * strlen(arguments-1));
+		int i;
+		for (i = 0; i < strlen(arguments); i++)
+		{
+			p[i] = arguments[i + 1];
+		}
+		return p;
+}
+
+void addApt(char* arguments,ApartmentList* lst)
+{
+	char* details=' ';
+	int price;
+	short int numRooms, entryDay, entryMonth, entryYear;
+	char* apartmentDetails = (char*)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
+	strcpy(apartmentDetails, arguments);
+	char* contents_chopped = removeFirstSignal(apartmentDetails);
+	splitApartmentDetails(contents_chopped, &details, '\"');
+	sscanf(details ,"%d%hd%hd%hd%hd%hd",&price,&numRooms,&entryDay,&entryMonth,&entryYear);
+	apartmentCode++;
+	Apartment* newApt =createNewApartment(apartmentCode, contents_chopped, price, numRooms, entryDay, entryMonth, entryYear);
+	insertApartmentToList(lst, newApt);
+
+}
 Apartment* createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear)
 {
+	time_t curtime;
+	time(&curtime);
 	Apartment *newApt = (Apartment *)ver_malloc(sizeof(Apartment));
 	newApt->id = id;
 	newApt->address = address;
@@ -10,7 +72,20 @@ Apartment* createNewApartment(unsigned int id, char *address, int price, short i
 	newApt->entryDay = entryDay;
 	newApt->entryMonth = entryMonth;
 	newApt->entryYear = entryYear;
-	newApt->dbEntryDate = time(NULL);
+	printf("Current time = %s", ctime(&curtime));
+	newApt->dbEntryDate = time(&curtime);
+	//לשאול את עידן איזה תצוגה הוא ירצה 
+	//time_t rawtime;
+	//struct tm* info;
+	//char buffer[80];
+
+	//time(&rawtime);
+
+	//info = localtime(&rawtime);
+
+	//strftime(buffer, 80, "%x - %I:%M%p", info);
+	//printf("Formatted date & time : |%s|\n", buffer);
+	
 	return newApt;
 }
 
@@ -134,6 +209,10 @@ void removeApartmentFromListById(ApartmentList *lst, unsigned int id)
 		curr = curr->next;
 	if (curr != NULL) // apartment with this id found, remove it from list
 		removeApartmentNodeFromList(lst, curr);
+	else
+	{
+		printf("Sorry, this apartment id does not exist");
+	}
 }
 
 void removeApartmentsFromListByEntryDate(ApartmentList *lst, int numDays)
