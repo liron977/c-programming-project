@@ -1,21 +1,51 @@
 ﻿#include "apartment.h"
 int apartmentCode = 0;
-#include <windows.h>
+
+
+void printListByTheHighestPrice(ApartmentList* lst)
+{
+	ApartmentNode* curr = lst->tail;
+	while (curr != NULL)
+	{
+		printApartment(curr->apt);
+		curr = curr->prev;
+	}
+}
+void printListByThelowPrice(ApartmentList* lst)
+{
+	ApartmentNode* curr = lst->head;
+	while (curr != NULL)
+	{
+		printApartment(curr->apt);
+		curr = curr->next;
+	}
+}
+
+void printApartmentList(ApartmentList* lst)
+{
+	ApartmentNode* curr = lst->head;
+	while (curr != NULL)
+	{
+		printApartment(curr->apt);
+		curr = curr->next;
+	}
+}
+
+void copyAptList(ApartmentList* lst, ApartmentList* newLst)
+{
+	ApartmentNode* curr = lst->head;
+	Apartment* aptNewList;
+	makeEmptyApartmentList(aptNewList);
+	while (curr != NULL)
+	{
+		aptNewList = curr->apt;
+		insertApartmentToList(newLst, aptNewList);
+		curr = curr->next;
+	}
+}
 void deleteApt(int daysNum, ApartmentList* lst)
 {
-	SYSTEMTIME t;
-	GetLocalTime(&t);
-	if (t.wDay - daysNum > 0)
-	{
-
-	}
-	else
-	{
-		if (((t.wDay - daysNum) / 30))
-		{
-
-		}
-	}
+	removeApartmentsFromListByEntryDate(lst, daysNum);
 }
 void buyApt(int codeApt,ApartmentList* lst)
 {
@@ -72,20 +102,7 @@ Apartment* createNewApartment(unsigned int id, char *address, int price, short i
 	newApt->entryDay = entryDay;
 	newApt->entryMonth = entryMonth;
 	newApt->entryYear = entryYear;
-	printf("Current time = %s", ctime(&curtime));
-	newApt->dbEntryDate = time(&curtime);
-	//לשאול את עידן איזה תצוגה הוא ירצה 
-	//time_t rawtime;
-	//struct tm* info;
-	//char buffer[80];
-
-	//time(&rawtime);
-
-	//info = localtime(&rawtime);
-
-	//strftime(buffer, 80, "%x - %I:%M%p", info);
-	//printf("Formatted date & time : |%s|\n", buffer);
-	
+	newApt->dbEntryDate = time(NULL);
 	return newApt;
 }
 
@@ -104,6 +121,19 @@ void printApartment(Apartment *apt)
 	printf("Price: %d\n", apt->price);
 	printf("Entry date: %hd.%hd.%hd\n", apt->entryDay, apt->entryMonth, apt->entryYear);
 	printf("Database entry date: %s\n", dbEntryDate);
+}
+
+void printListByApartmentCode(ApartmentList* lst)
+{
+	// print an apartment according to instructions
+	ApartmentNode* curr = lst->head;
+	while (curr!=NULL)
+	{
+		puts("Apt details:");
+		printf("Code: %u\n",curr->apt->id);
+		curr = curr->next;
+	}
+	
 }
 
 void freeApartment(Apartment *apt)
@@ -220,7 +250,6 @@ void removeApartmentsFromListByEntryDate(ApartmentList *lst, int numDays)
 	double diffInSeconds = (double)(numDays) * (double)(24 * 60 * 60); // days * hours * minuts * seconds
 	time_t currTime;
 	time(&currTime);
-
 	ApartmentNode *curr = lst->head, *tmp;
 	while (curr != NULL)
 	{

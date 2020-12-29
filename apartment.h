@@ -45,12 +45,17 @@ typedef struct apartmentList
 
 
 /*
-Remove from the apartment list all the apartment from the last days(according to dateNum)
+*Copy the apartment list to the new apartment list
+*/
+void copyAptList(ApartmentList* lst, ApartmentList* newLst);
+
+/*
+*Remove from the apartment list all the apartment from the last days(according to dateNum)
 */
 void deleteApt(int daysNum, ApartmentList* lst);
 
 /*
-Buy an apartment and remove it from the appartment list
+*Buy an apartment and remove it from the appartment list
 */
 void buyApt(int codeApt, ApartmentList* lst);
 
@@ -61,9 +66,29 @@ void buyApt(int codeApt, ApartmentList* lst);
 char* removeFirstSignal(char* arguments);
 
 /*
+*Print the Apartment list with all the apartment data
+*/
+void printApartmentList(ApartmentList* lst);
+
+/*
+*Print the Apartment list sorted by the highest price to the lowest price
+*/
+void printListByTheHighestPrice(ApartmentList* lst);
+
+/*
+*Print the Apartment list sorted by the lowest price to the highest price
+*/
+void printListByThelowPrice(ApartmentList* lst);
+
+/*
 * Creates a new apartment.
 */
 Apartment* createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear);
+
+/*
+* Prints an the apartment code to the screen according to given instructions
+*/
+void printListByApartmentCode(ApartmentList* lst);
 
 /*
 * Prints an apartment to the screen according to given instructions
