@@ -46,8 +46,8 @@ void main()
 	makeEmptyApartmentList(&aptsList);
 	makeEmptyHistory(&historyDB);
 	//read appartemnt from fille ,read history from file
-	readApartmentsFromBinaryFile(&aptsList); // TODO implement
-	readCommandHistoryFromFile(&historyDB); // TODO implement
+	//readApartmentsFromBinaryFile(&aptsList); // TODO implement
+	//readCommandHistoryFromFile(&historyDB); // TODO implement
 
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
@@ -81,8 +81,8 @@ void main()
 		input = getInput();  // get next prompt
 	}
 	// end of program
-	writeToPromtsTextFile(); // TODO implement
-	writeToApartmentsBinaryFile(); // TODO implement
+	//writeToPromtsTextFile(); // TODO implement
+	//writeToApartmentsBinaryFile(); // TODO implement
 	freeApartmentList(&aptsList);
 	freeHistory(&historyDB);
 	free(input); // free last exit command given
