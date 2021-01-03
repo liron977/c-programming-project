@@ -23,6 +23,8 @@
 
 /*** Search STRUCT FUNCTIONS ***/
 
+//void printListByTheHighestPrice(ApartmentList* lst);
+
 /*
 *Update the apartment list with all the apartments cost up to NIS price
 */

@@ -43,7 +43,7 @@ typedef struct apartmentList
 
 /***** APARTMENT FUNCTIONS ******/
 
-
+void copyString2(char* string, char* newString);
 /*
 *Copy the apartment list to the new apartment list
 */
@@ -52,12 +52,12 @@ void copyAptList(ApartmentList* lst, ApartmentList* newLst);
 /*
 *Remove from the apartment list all the apartment from the last days(according to dateNum)
 */
-void deleteApt(int daysNum, ApartmentList* lst);
+void deleteApt(char* daysNum, ApartmentList* lst);
 
 /*
 *Buy an apartment and remove it from the appartment list
 */
-void buyApt(int codeApt, ApartmentList* lst);
+void buyApt(char* codeApt, ApartmentList* lst);
 
 /*
 *Remove the first signal from the string 

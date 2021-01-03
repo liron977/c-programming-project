@@ -30,26 +30,65 @@ void printApartmentList(ApartmentList* lst)
 		curr = curr->next;
 	}
 }
+Apartment* copyApartment(Apartment* apartment)
+{
+	time_t curtime;
+	time(&curtime);
+	Apartment* newApt = (Apartment*)ver_malloc(sizeof(Apartment));
+	newApt->id = apartment->id;
+	char* newAdress = (char*)ver_malloc(sizeof(char) * strlen(apartment->address));
+	strcpy(newAdress, apartment->address);
+	newApt->address = newAdress;
+	newApt->price = apartment->price;
+	newApt->numRooms = apartment->numRooms;
+	newApt->entryDay = apartment->entryDay;
+	newApt->entryMonth = apartment->entryMonth;
+	newApt->entryYear = apartment->entryYear;
+	newApt->dbEntryDate = apartment->dbEntryDate;
+	return newApt;
+}
+void copyString2(char* string, char* newString)
+{
+	int size = strlen(string);
+	int i = 0;
+	while (i < size)
+	{
+		i++;
+		newString[i] = string[i];
 
+	}
+}
 void copyAptList(ApartmentList* lst, ApartmentList* newLst)
 {
+
+	makeEmptyApartmentList(newLst);
 	ApartmentNode* curr = lst->head;
 	Apartment* aptNewList;
-	makeEmptyApartmentList(aptNewList);
+		Apartment* tmp;
+	//makeEmptyApartmentList(aptNewList);
 	while (curr != NULL)
 	{
-		aptNewList = curr->apt;
+		
+		tmp = curr->apt;
+		//char* newAddress = (char*)ver_malloc(sizeof(char) * strlen(tmp->address));
+		//strcpy(newAddress, tmp->address);
+		aptNewList = createNewApartment(tmp->id, tmp->address, tmp->price, tmp->numRooms, tmp->entryDay, tmp->entryMonth, tmp->entryYear);
+		//aptNewList= copyApartment(curr->apt);
 		insertApartmentToList(newLst, aptNewList);
 		curr = curr->next;
 	}
 }
-void deleteApt(int daysNum, ApartmentList* lst)
+void deleteApt(char* daysNum, ApartmentList* lst)
 {
-	removeApartmentsFromListByEntryDate(lst, daysNum);
+	unsigned int num;
+	int details=daysNum[strlen(daysNum)-1]-'0';
+	removeApartmentsFromListByEntryDate(lst, details);
 }
-void buyApt(int codeApt,ApartmentList* lst)
+void buyApt(char* codeApt,ApartmentList* lst)
 {
-	removeApartmentFromListById(lst, codeApt);
+	unsigned int num;
+	sscanf(codeApt, " %d", &num);
+	removeApartmentFromListById(lst, num);
 }
 
 void splitApartmentDetails(char* address,char** details,char token)
@@ -218,7 +257,9 @@ void insertApartmentNodeToStartList(ApartmentList *lst, ApartmentNode *head)
 
 ApartmentNode* getApartmentNodeBefore(ApartmentList *lst, int price)
 {
-	if (isEmptyApartmentList(lst) || price <= lst->head->apt->price)  // price is smaller than minimum in list - should be new head
+	if (isEmptyApartmentList(lst))
+		return NULL;
+	else if (price <= lst->head->apt->price)  // price is smaller than minimum in list - should be new head
 		return NULL;
 	else if (price >= lst->tail->apt->price)  // price is greater than maximum in list. Return the current maximum (tail)
 		return lst->tail;
@@ -297,6 +338,6 @@ void freeApartmentList(ApartmentList *lst)
 
 void freeApartmentNode(ApartmentNode *node)
 {
-	freeApartment(node->apt);
+	//freeApartment(node->apt);
 	free(node);
 }
