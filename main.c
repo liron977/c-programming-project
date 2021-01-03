@@ -28,15 +28,15 @@ Course's final project - console application to manage real estate apartments
 #define SHORT_HISTORY "short_history"
 #define HISTORY "history"
 
-void runLastCommandFromHistory(ApartmentList* lst, History *historyDB);
-void runCommandNumberFromHistory(ApartmentList* lst,char *command, char *arguments, History *historyDB);
-void runApartmentCommandFromHistory(ApartmentList* lst, History *historyDB, char *prompt);
-void runApartmentCommands(ApartmentList* lst, char *command, char *arguments, History *historyDB, char *prompt);
+void runLastCommandFromHistory(ApartmentList *lst, History *historyDB);
+void runCommandNumberFromHistory(ApartmentList *lst, char *command, char *arguments, History *historyDB);
+void runApartmentCommandFromHistory(ApartmentList *lst, History *historyDB, char *prompt);
+void runApartmentCommands(ApartmentList *lst, char *command, char *arguments, History *historyDB, char *prompt);
 void splitPromptToCommandAndArguments(char *prompt, char **pCommand, char **pArguments);
 void splitCommandAndArgumentsByToken(char *command, char **pArguments, char token);
-char* strReplace(char *orig, char *str1, char *str2);
+char *strReplace(char *orig, char *str1, char *str2);
 int countNumberOfReplacementStrings(char *str, char *repl);
-char* getInput();
+char *getInput();
 
 
 void main()
@@ -46,8 +46,8 @@ void main()
 	makeEmptyApartmentList(&aptsList);
 	makeEmptyHistory(&historyDB);
 	//read appartemnt from fille ,read history from file
-	//readApartmentsFromBinaryFile(&aptsList); // TODO implement
-	//readCommandHistoryFromFile(&historyDB); // TODO implement
+	readApartmentsFromBinaryFile(&aptsList); // TODO implement
+	readCommandHistoryFromFile(&historyDB); // TODO implement
 
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
@@ -71,28 +71,28 @@ void main()
 		else if (strcmp(command, SHORT_HISTORY) == 0)
 			printShortTermHistory(&historyDB);
 		else if (strcmp(command, LAST_COMMAND) == 0)
-			runLastCommandFromHistory(&aptsList,&historyDB);
+			runLastCommandFromHistory(&aptsList, &historyDB);
 		else if (command[0] == '!') // one of: !<num>, !<num>^str1^str2
-			runCommandNumberFromHistory(&aptsList,command, arguments, &historyDB);
-		//else  // command is one of: find-apt, add-apt, buy-apt, delete-apt
-		runApartmentCommands(&aptsList,command, arguments, &historyDB, input);
+			runCommandNumberFromHistory(&aptsList, command, arguments, &historyDB);
+		else  // command is one of: find-apt, add-apt, buy-apt, delete-apt
+			runApartmentCommands(&aptsList, command, arguments, &historyDB, input);
 		free(command); // this also frees arguments memory
 		free(input); // current input no longer needed
 		input = getInput();  // get next prompt
 	}
 	// end of program
-	//writeToPromtsTextFile(); // TODO implement
-	//writeToApartmentsBinaryFile(); // TODO implement
-	//freeApartmentList(&aptsList);
-	//freeHistory(&historyDB);
-	//free(input); // free last exit command given
+	writeToPromtsTextFile(); // TODO implement
+	writeToApartmentsBinaryFile(); // TODO implement
+	freeApartmentList(&aptsList);
+	freeHistory(&historyDB);
+	free(input); // free last exit command given
 	puts("Good Bye!");
 }
 
 /*
 * Gets the last prompt entered into a history database. If found, runs the prompt
 */
-void runLastCommandFromHistory(ApartmentList* lst, History *historyDB)
+void runLastCommandFromHistory(ApartmentList *lst, History *historyDB)
 {
 	char *lastPrompt = getLastPrompt(historyDB);
 	if (lastPrompt != NULL)  // last prompt found
@@ -105,7 +105,7 @@ void runLastCommandFromHistory(ApartmentList* lst, History *historyDB)
 * command string should be !<num>
 * arguments should be NULL if original command is !<num>, or str1^str2 if original command is !<num>^str1^str2
 */
-void runCommandNumberFromHistory(ApartmentList* lst, char *command, char *arguments, History *historyDB)
+void runCommandNumberFromHistory(ApartmentList *lst, char *command, char *arguments, History *historyDB)
 {
 	int promptNumber;
 	sscanf(command + 1, "%d", &promptNumber); // get num after !
@@ -121,7 +121,7 @@ void runCommandNumberFromHistory(ApartmentList* lst, char *command, char *argume
 			splitCommandAndArgumentsByToken(str1, &str2, '^');
 			// New allocated string is returned since we don't want to change prompt directly (as its stored in history)
 			replacePrompt = strReplace(prompt, str1, str2);
-			runApartmentCommandFromHistory(lst,historyDB, replacePrompt);
+			runApartmentCommandFromHistory(lst, historyDB, replacePrompt);
 			free(replacePrompt); // replaced prompt is like new input - needs to be freed after use
 		}
 	}
@@ -131,11 +131,11 @@ void runCommandNumberFromHistory(ApartmentList* lst, char *command, char *argume
 * Runs an apartment command retrieved from history.
 * Splits the prompt, taken from history, into the command and arguments and runs the needed command according to arguments
 */
-void runApartmentCommandFromHistory(ApartmentList* lst, History *historyDB, char *prompt)
+void runApartmentCommandFromHistory(ApartmentList *lst, History *historyDB, char *prompt)
 {
 	char *command, *arguments;
 	splitPromptToCommandAndArguments(prompt, &command, &arguments);
-	runApartmentCommands(&lst,command, arguments, historyDB, prompt);  // only apartments commands are kept in history
+	runApartmentCommands(lst, command, arguments, historyDB, prompt);  // only apartments commands are kept in history
 	free(command);
 }
 
@@ -143,17 +143,17 @@ void runApartmentCommandFromHistory(ApartmentList* lst, History *historyDB, char
 * Runs a given apartment command according to arguments. Adds the prompt to the given history database
 * Valid aparetment commands are: find-apt, add-apt, buy-apt, delete-apt
 */
-void runApartmentCommands(ApartmentList* lst,char *command, char *arguments, History *historyDB, char *prompt)
+void runApartmentCommands(ApartmentList *lst, char *command, char *arguments, History *historyDB, char *prompt)
 {
 	//printf(">> %s %s\n", command, arguments)//TO DO IN THE FILE
 	if (strcmp(command, FIND_APT) == 0)
-		findApt(arguments,lst); 
+		findApt(arguments, lst);
 	else if (strcmp(command, ADD_APT) == 0)
-		addApt(arguments,lst); 
+		addApt(arguments, lst);
 	else if (strcmp(command, BUY_APT) == 0)
-		buyApt(arguments,lst); 
+		buyApt(arguments, lst);
 	else if (strcmp(command, DELETE_APT) == 0)
-		deleteApt(arguments,lst); 
+		deleteApt(arguments, lst);
 	else // invalid apartment command, nothing to do
 		return;
 	addPromptToHistoryDatabase(historyDB, prompt);
@@ -198,7 +198,7 @@ void splitCommandAndArgumentsByToken(char *command, char **pArguments, char toke
 * Doesn't change orig string. Allocates memory for new replaced string and returns it.
 * Returned string should be freed by user
 */
-char* strReplace(char *orig, char *str1, char *str2)
+char *strReplace(char *orig, char *str1, char *str2)
 {
 	char *result, *resultInsertPoint, *tmp;
 	int replaceCount = countNumberOfReplacementStrings(orig, str1);
@@ -244,7 +244,7 @@ int countNumberOfReplacementStrings(char *str, char *repl)
 * Reads a line of unknown length from stdin, until a new-line is given (\n char).
 * Returns the line as a string
 */
-char* getInput()
+char *getInput()
 {
 	unsigned int allocSize = BUFFER_SIZE, length = 0;
 	char *input;

@@ -43,52 +43,52 @@ typedef struct apartmentList
 
 /***** APARTMENT FUNCTIONS ******/
 
-void copyString2(char* string, char* newString);
+void copyString2(char *string, char *newString);
 /*
 *Copy the apartment list to the new apartment list
 */
-void copyAptList(ApartmentList* lst, ApartmentList* newLst);
+void copyAptList(ApartmentList *lst, ApartmentList *newLst);
 
 /*
 *Remove from the apartment list all the apartment from the last days(according to dateNum)
 */
-void deleteApt(char* daysNum, ApartmentList* lst);
+void deleteApt(char *daysNum, ApartmentList *lst);
 
 /*
 *Buy an apartment and remove it from the appartment list
 */
-void buyApt(char* codeApt, ApartmentList* lst);
+void buyApt(char *codeApt, ApartmentList *lst);
 
 /*
-*Remove the first signal from the string 
+*Remove the first signal from the string
 */
 
-char* removeFirstSignal(char* arguments);
+char *removeFirstSignal(char *arguments);
 
 /*
 *Print the Apartment list with all the apartment data
 */
-void printApartmentList(ApartmentList* lst);
+void printApartmentList(ApartmentList *lst);
 
 /*
 *Print the Apartment list sorted by the highest price to the lowest price
 */
-void printListByTheHighestPrice(ApartmentList* lst);
+void printListByTheHighestPrice(ApartmentList *lst);
 
 /*
 *Print the Apartment list sorted by the lowest price to the highest price
 */
-void printListByThelowPrice(ApartmentList* lst);
+void printListByThelowPrice(ApartmentList *lst);
 
 /*
 * Creates a new apartment.
 */
-Apartment* createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear);
+Apartment *createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear);
 
 /*
 * Prints an the apartment code to the screen according to given instructions
 */
-void printListByApartmentCode(ApartmentList* lst);
+void printListByApartmentCode(ApartmentList *lst);
 
 /*
 * Prints an apartment to the screen according to given instructions
@@ -103,7 +103,7 @@ void freeApartment(Apartment *apt);
 /*
 * Add a new apartment to the appartment list
 */
-void addApt(char* arguments,ApartmentList* lst);
+void addApt(char *arguments, ApartmentList *lst);
 
 
 /***** APARTMENTLIST FUNCTIONS ******/
@@ -122,7 +122,7 @@ bool isEmptyApartmentList(ApartmentList *lst);
 * Creates a new apartment list node that can be added to a list.
 * Requires an apartment reference, and references to the next and previous apartment nodes
 */
-ApartmentNode* createNewApartmentListNode(Apartment *apt, ApartmentNode *next, ApartmentNode *prev);
+ApartmentNode *createNewApartmentListNode(Apartment *apt, ApartmentNode *next, ApartmentNode *prev);
 
 /*
 * Given an apartment list and apartment reference, inserts a new node with this apartment.
@@ -152,7 +152,7 @@ void insertApartmentNodeToStartList(ApartmentList *lst, ApartmentNode *head);
 * Returns NULL if price is minimal - meaning should be at start of list.
 * Assumes x in not in the list - otherwise it shouldn't be used with this method
 */
-ApartmentNode* getApartmentNodeBefore(ApartmentList *lst, int price);
+ApartmentNode *getApartmentNodeBefore(ApartmentList *lst, int price);
 
 /*
 * Given an apartment list and an apartment id, removes the apartment with this id from the list. Updates references as needed

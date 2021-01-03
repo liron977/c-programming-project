@@ -8,13 +8,13 @@
 * Allocates memory using malloc, verifying allocation succeeded.
 * If allocation fails, prints an error message and exits the program
 */
-void* ver_malloc(size_t size);
+void *ver_malloc(size_t size);
 
 /*
 * Re-allocates memory using realloc, verifying allocation succeeded.
 * If allocation fails, prints an error message and exits the program
 */
-void* ver_realloc(void *data, size_t size);
+void *ver_realloc(void *data, size_t size);
 
 /*
 * verifies an array is allocated (not null).

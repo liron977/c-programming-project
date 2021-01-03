@@ -1,17 +1,17 @@
 #include "memoryUtils.h"
 
 
-void* ver_malloc(size_t size)
+void *ver_malloc(size_t size)
 {
-	void* res = malloc(size);
+	void *res = malloc(size);
 	verifyAllocation(res);
 	return res;
 }
 
 
-void* ver_realloc(void *data, size_t size)
+void *ver_realloc(void *data, size_t size)
 {
-	void* res = realloc(data, size);
+	void *res = realloc(data, size);
 	verifyAllocation(res);
 	return res;
 }

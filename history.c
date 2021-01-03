@@ -14,7 +14,7 @@ void makeEmptyHistory(History *history)
 
 void addPromptToHistoryDatabase(History *history, char *prompt)
 {
-	char *copiedPrompt = (char*)ver_malloc(sizeof(char) * (strlen(prompt) + 1));
+	char *copiedPrompt = (char *)ver_malloc(sizeof(char) * (strlen(prompt) + 1));
 	strcpy(copiedPrompt, prompt);
 	if (history->totalSize >= SHORT_TERM_HISTROY_SIZE) // replace older prompt in short history. add older prompt to long term list
 		insertDataToEndHistoryList(history->longTermHistory, history->shortTermHistory[history->shortTermHistoryIndex]);
@@ -23,14 +23,14 @@ void addPromptToHistoryDatabase(History *history, char *prompt)
 	history->totalSize = history->totalSize + 1;
 }
 
-char* getLastPrompt(History *history)
+char *getLastPrompt(History *history)
 {
 	if (history->totalSize == 0)
 		return NULL; // no prompts were given yet
 	return history->shortTermHistory[(history->shortTermHistoryIndex - 1) % SHORT_TERM_HISTROY_SIZE];
 }
 
-char* getPromptNumber(History *history, int promptNumber)
+char *getPromptNumber(History *history, int promptNumber)
 {
 	char *prompt;
 	if (promptNumber < 1 || promptNumber > history->totalSize) // prompt number doesn't exist in history
@@ -105,7 +105,7 @@ bool isEmptyHistoryList(LongTermHistoryList *lst)
 	return lst->size == 0;
 }
 
-LongTermHistoryNode* createNewHistoryListNode(char *prompt, LongTermHistoryNode *next)
+LongTermHistoryNode *createNewHistoryListNode(char *prompt, LongTermHistoryNode *next)
 {
 	LongTermHistoryNode *res = (LongTermHistoryNode *)ver_malloc(sizeof(LongTermHistoryNode));
 	res->prompt = prompt;
@@ -133,7 +133,7 @@ void insertNodeToEndHistoryList(LongTermHistoryList *lst, LongTermHistoryNode *t
 	lst->size = lst->size + 1;
 }
 
-LongTermHistoryNode* getHistoryNodeAtIndex(LongTermHistoryList *lst, int index)
+LongTermHistoryNode *getHistoryNodeAtIndex(LongTermHistoryList *lst, int index)
 {
 	if (index < 0 || index > lst->size) // requested index is out of bounds
 		return NULL;

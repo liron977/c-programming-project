@@ -49,13 +49,13 @@ void addPromptToHistoryDatabase(History *history, char *prompt);
 * Given a history database, get the last prompt entered into it.
 * Returns NULL if not found
 */
-char* getLastPrompt(History *history);
+char *getLastPrompt(History *history);
 
 /*
 * Given a prompt number, find and return this prompt in history database.
 * Returns NULL if not found
 */
-char* getPromptNumber(History *history, int promptNumber);
+char *getPromptNumber(History *history, int promptNumber);
 
 /*
 * Given a history database, prints all the prompts in the history.
@@ -105,7 +105,7 @@ bool isEmptyHistoryList(LongTermHistoryList *lst);
 * Creates a new long term history list node that can be added to a list.
 * Requires a prompt string, and reference to the next nodes
 */
-LongTermHistoryNode* createNewHistoryListNode(char *prompt, LongTermHistoryNode *next);
+LongTermHistoryNode *createNewHistoryListNode(char *prompt, LongTermHistoryNode *next);
 
 /*
 * Given a history list and prompt, inserts a new node with this command data to the end of the list.
@@ -120,7 +120,7 @@ void insertNodeToEndHistoryList(LongTermHistoryList *lst, LongTermHistoryNode *t
 /*
 * Returns the history node at index. If not found, returns NULL
 */
-LongTermHistoryNode* getHistoryNodeAtIndex(LongTermHistoryList *lst, int index);
+LongTermHistoryNode *getHistoryNodeAtIndex(LongTermHistoryList *lst, int index);
 
 /*
 * Prints all the commands kept in the given history list. Prints with index prefix for each command
@@ -130,7 +130,7 @@ void printHistoryList(LongTermHistoryList *lst);
 /*
 * Frees the allocated memory of a history list (frees each node's memory)
 */
-void freeHistoryList(LongTermHistoryList* lst);
+void freeHistoryList(LongTermHistoryList *lst);
 
 /*
 * Frees the allocated memory of a history node

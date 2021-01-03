@@ -28,36 +28,36 @@
 /*
 *Update the apartment list with all the apartments cost up to NIS price
 */
-void MaxPrice(int price, ApartmentList* lst);
+void MaxPrice(int price, ApartmentList *lst);
 /*
 *Update the apartment list with all the apartments which starts at NIS price
 */
-void MinPrice(int price, ApartmentList* lst);
+void MinPrice(int price, ApartmentList *lst);
 /*
-*Update the apartment list with all the apartments have at least numOfRooms 
+*Update the apartment list with all the apartments have at least numOfRooms
 */
-void minNumOfRooms(int numOfRooms, ApartmentList* lst);
+void minNumOfRooms(int numOfRooms, ApartmentList *lst);
 /*
 *Update the apartment list with all the apartments with a maximum of numOfRooms
 */
-void maxNumOfRooms(int numOfRooms, ApartmentList* lst);
+void maxNumOfRooms(int numOfRooms, ApartmentList *lst);
 /*
 *Update the apartment list with all the apartments Which are vacant until the date
 */
-void searchByDate(int date, ApartmentList* lst);
+void searchByDate(int date, ApartmentList *lst);
 /*
 *Update the apartment list with all the apartments that entered to the db in the last numDays
 */
-void searchBEntryDate(int numDays, ApartmentList* lst);
+void searchBEntryDate(int numDays, ApartmentList *lst);
 
 /*
 *Split the argument to the correct command according to the input
 */
-void splitToCommands(char* arguments, ApartmentList* lst, int num);
+void splitToCommands(char *arguments, ApartmentList *lst, int num);
 /*
 *Prints the expected data according to the find commands
 */
-void findApt(char* arguments, ApartmentList* lst);
+void findApt(char *arguments, ApartmentList *lst);
 
 
 #endif
