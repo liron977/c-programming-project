@@ -30,6 +30,9 @@
     <ClCompile Include="search.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stringUtils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memoryUtils.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

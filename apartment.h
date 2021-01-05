@@ -9,9 +9,6 @@
 #include <string.h>
 #include "memoryUtils.h"
 
-
-
-
 #define DB_ENTRY_MAX_STRING_LENGTH 11 // xx.xx.xxxx\0
 
 typedef struct apartment
@@ -43,7 +40,7 @@ typedef struct apartmentList
 
 /***** APARTMENT FUNCTIONS ******/
 
-void copyString2(char *string, char *newString);
+
 /*
 *Copy the apartment list to the new apartment list
 */
@@ -59,14 +56,9 @@ void deleteApt(char *daysNum, ApartmentList *lst);
 */
 void buyApt(char *codeApt, ApartmentList *lst);
 
-/*
-*Remove the first signal from the string
-*/
-
-char *removeFirstSignal(char *arguments);
 
 /*
-*Print the Apartment list with all the apartment data
+*Print the Apartment list with all the apartment data orted by the lowest price to the highest price
 */
 void printApartmentList(ApartmentList *lst);
 
@@ -76,17 +68,17 @@ void printApartmentList(ApartmentList *lst);
 void printListByTheHighestPrice(ApartmentList *lst);
 
 /*
-*Print the Apartment list sorted by the lowest price to the highest price
-*/
-void printListByThelowPrice(ApartmentList *lst);
-
-/*
 * Creates a new apartment.
 */
 Apartment *createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear);
 
 /*
-* Prints an the apartment code to the screen according to given instructions
+* Prints an the apartment code to the screen according to given instructions by the highest price to the low
+*/
+void printApartmentCodeByTheHighestPrice(ApartmentList* lst);
+
+/*
+* Prints an the apartment code to the screen according to given instructions , the defult print command 
 */
 void printListByApartmentCode(ApartmentList *lst);
 

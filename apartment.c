@@ -1,6 +1,18 @@
 ﻿#include "apartment.h"
+#include "stringUtils.h"
 int apartmentCode = 0;
 
+void printApartmentCodeByTheHighestPrice(ApartmentList* lst)
+{
+	ApartmentNode* curr = lst->tail;
+	while (curr != NULL)
+	{
+		// print an apartment according to instructions
+			puts("Apt details:");
+			printf("Code: %u\n", curr->apt->id);
+		curr = curr->prev;
+	}
+}
 
 void printListByTheHighestPrice(ApartmentList *lst)
 {
@@ -9,15 +21,6 @@ void printListByTheHighestPrice(ApartmentList *lst)
 	{
 		printApartment(curr->apt);
 		curr = curr->prev;
-	}
-}
-void printListByThelowPrice(ApartmentList *lst)
-{
-	ApartmentNode *curr = lst->head;
-	while (curr != NULL)
-	{
-		printApartment(curr->apt);
-		curr = curr->next;
 	}
 }
 
@@ -30,34 +33,6 @@ void printApartmentList(ApartmentList *lst)
 		curr = curr->next;
 	}
 }
-Apartment *copyApartment(Apartment *apartment)
-{
-	time_t curtime;
-	time(&curtime);
-	Apartment *newApt = (Apartment *)ver_malloc(sizeof(Apartment));
-	newApt->id = apartment->id;
-	char *newAdress = (char *)ver_malloc(sizeof(char) * strlen(apartment->address));
-	strcpy(newAdress, apartment->address);
-	newApt->address = newAdress;
-	newApt->price = apartment->price;
-	newApt->numRooms = apartment->numRooms;
-	newApt->entryDay = apartment->entryDay;
-	newApt->entryMonth = apartment->entryMonth;
-	newApt->entryYear = apartment->entryYear;
-	newApt->dbEntryDate = apartment->dbEntryDate;
-	return newApt;
-}
-void copyString2(char *string, char *newString)
-{
-	int size = strlen(string);
-	int i = 0;
-	while (i < size)
-	{
-		i++;
-		newString[i] = string[i];
-
-	}
-}
 void copyAptList(ApartmentList *lst, ApartmentList *newLst)
 {
 
@@ -65,69 +40,39 @@ void copyAptList(ApartmentList *lst, ApartmentList *newLst)
 	ApartmentNode *curr = lst->head;
 	Apartment *aptNewList;
 	Apartment *tmp;
-	//makeEmptyApartmentList(aptNewList);
-	while (curr != NULL)
-	{
-
+	while (curr != NULL){
 		tmp = curr->apt;
-		char *newAddress = (char *)ver_malloc(sizeof(char) * strlen(tmp->address) + 1);
+		char *newAddress = (char *)ver_malloc(sizeof(char) * strlen(tmp->address) + 1);//in or
 		strcpy(newAddress, tmp->address);
 		aptNewList = createNewApartment(tmp->id, newAddress, tmp->price, tmp->numRooms, tmp->entryDay, tmp->entryMonth, tmp->entryYear);
-		//aptNewList= copyApartment(curr->apt);
 		insertApartmentToList(newLst, aptNewList);
 		curr = curr->next;
 	}
 }
 void deleteApt(char *daysNum, ApartmentList *lst)
 {
-	unsigned int num;
-	int details = daysNum[strlen(daysNum) - 1] - '0';
+	int details = daysNum[strlen(daysNum) - 1] - '0';//In order to get the number from the string 
 	removeApartmentsFromListByEntryDate(lst, details);
 }
 void buyApt(char *codeApt, ApartmentList *lst)
 {
 	unsigned int num;
-	sscanf(codeApt, " %d", &num);
+	sscanf(codeApt, " %d", &num);//In order to get the code from the string 
 	removeApartmentFromListById(lst, num);
 }
-
-void splitApartmentDetails(char *address, char **details, char token)
-{
-
-	char *index = strchr(address, token);
-	if (index == NULL)  // token not in command
-		*details = NULL;
-	else // token found in command - split to arguments
-	{
-		*index = '\0';
-		*details = index + 1;
-	}
-}
-char *removeFirstSignal(char *arguments)
-{
-	char *p = (char *)ver_malloc(sizeof(*p) * strlen(arguments));
-	int i;
-	for (i = 0; i < strlen(arguments); i++)
-	{
-		p[i] = arguments[i + 1];
-	}
-	return p;
-}
-
 void addApt(char *arguments, ApartmentList *lst)
 {
-	char *details = ' ';
+	char *details;
 	int price;
 	short int numRooms, entryDay, entryMonth, entryYear;
-	char *apartmentDetails = (char *)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
-	strcpy(apartmentDetails, arguments);
-	char *contents_chopped = removeFirstSignal(apartmentDetails);
-	splitApartmentDetails(contents_chopped, &details, '\"');
-	sscanf(details, "%d%hd%hd%hd%hd%hd", &price, &numRooms, &entryDay, &entryMonth, &entryYear);
+	arguments++;//Remove the rirst signal
+	splitCommandAndArgumentsByToken(arguments, &details, '\"');//Split the argument
+	char* apartmentAddress = (char*)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
+	strcpy(apartmentAddress, arguments);
+	sscanf(details, "%d%hd%hd%hd%hd", &price, &numRooms, &entryDay, &entryMonth, &entryYear);
 	apartmentCode++;
-	Apartment *newApt = createNewApartment(apartmentCode, contents_chopped, price, numRooms, entryDay, entryMonth, entryYear);
+	Apartment *newApt = createNewApartment(apartmentCode, apartmentAddress, price, numRooms, entryDay, entryMonth, entryYear);
 	insertApartmentToList(lst, newApt);
-
 }
 Apartment *createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear)
 {
@@ -161,7 +106,6 @@ void printApartment(Apartment *apt)
 	printf("Entry date: %hd.%hd.%hd\n", apt->entryDay, apt->entryMonth, apt->entryYear);
 	printf("Database entry date: %s\n", dbEntryDate);
 }
-
 void printListByApartmentCode(ApartmentList *lst)
 {
 	// print an apartment according to instructions
@@ -174,7 +118,6 @@ void printListByApartmentCode(ApartmentList *lst)
 	}
 
 }
-
 void freeApartment(Apartment *apt)
 {
 	free(apt->address);

@@ -53,7 +53,8 @@ void searchBEntryDate(int numDays, ApartmentList *lst);
 /*
 *Split the argument to the correct command according to the input
 */
-void splitToCommands(char *arguments, ApartmentList *lst, int num);
+void splitToCommands(char *arguments, ApartmentList *lst, int num,char* prevCommand);
+
 /*
 *Prints the expected data according to the find commands
 */
