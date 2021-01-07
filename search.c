@@ -1,5 +1,6 @@
 #include "search.h"
 #include "apartment.h"
+#include "stringUtils.h"
 
 
 void MaxPrice(int price, ApartmentList *lst)
@@ -11,12 +12,11 @@ void MaxPrice(int price, ApartmentList *lst)
 		currNext = curr->next;
 		if (curr->apt->price > price)
 		{
-			removeApartmentFromListById(lst, curr->apt->id);
+			removeApartmentNodeFromList(lst, curr);
 		}
 		curr = currNext;
 	}
 }
-
 void MinPrice(int price, ApartmentList *lst)
 {
 	ApartmentNode *curr = lst->head;
@@ -26,7 +26,7 @@ void MinPrice(int price, ApartmentList *lst)
 		currNext = curr->next;
 		if (curr->apt->price < price)
 		{
-			removeApartmentFromListById(lst, curr->apt->id);
+			removeApartmentNodeFromList(lst, curr);
 		}
 		curr = curr->next;
 	}
@@ -40,11 +40,8 @@ void minNumOfRooms(int numOfRooms, ApartmentList *lst)
 		currNext = curr->next;
 		if (curr->apt->numRooms < numOfRooms)
 		{
-
-			removeApartmentFromListById(lst, curr->apt->id);
-
+			removeApartmentNodeFromList(lst, curr);
 		}
-
 		curr = currNext;
 	}
 }
@@ -57,7 +54,7 @@ void maxNumOfRooms(int numOfRooms, ApartmentList *lst)
 		currNext = curr->next;
 		if (curr->apt->numRooms > numOfRooms)
 		{
-			removeApartmentFromListById(lst, curr->apt->id);
+			removeApartmentNodeFromList(lst, curr);
 		}
 		curr = currNext;
 	}
@@ -67,7 +64,9 @@ void searchByDate(int date, ApartmentList *lst)
 	ApartmentNode *curr = lst->head;
 	ApartmentNode *currNext;
 	int yearDate, monthDate, dayDate;
+	//Split the date to year,month,day
 	yearDate = date % 10000;
+	yearDate = date % 2000;
 	date = date / 10000;
 	monthDate = date % 100;
 	date = date / 100;
@@ -90,7 +89,6 @@ void searchByDate(int date, ApartmentList *lst)
 		}
 		curr = currNext;
 	}
-
 }
 void searchBEntryDate(int numDays, ApartmentList *lst)
 {
@@ -106,7 +104,7 @@ void searchBEntryDate(int numDays, ApartmentList *lst)
 		curr = tmp;
 	}
 }
-void splitToCommands(char *arguments, ApartmentList *lst, int num)
+void splitToCommands(char *arguments, ApartmentList *lst, int num,char* prevCommand)
 {
 
 	if (strcmp(arguments, MAX_PRICE) == 0)
@@ -122,39 +120,49 @@ void splitToCommands(char *arguments, ApartmentList *lst, int num)
 	else if (strcmp(arguments, ENTER) == 0)
 		searchBEntryDate(num, lst);
 	else if (strcmp(arguments, SORTED_BY_THE_LOW_PRICE) == 0)
-		printListByThelowPrice(lst);
+	{
+		if (strcmp(prevCommand, ENTER) == 0)
+			printListByApartmentCode(lst);
+		else
+			printApartmentList(lst);
+	}
 	else if (strcmp(arguments, SORTED_BY_THE_HIGHEST_PRICE) == 0)
-		printListByTheHighestPrice(lst);
-
-
+	{
+		if (strcmp(prevCommand, ENTER) == 0)
+			printApartmentCodeByTheHighestPrice(lst);
+		else
+			printListByTheHighestPrice(lst);
+	}
+		
 }
-
 void findApt(char *arguments, ApartmentList *lst)
 {
-	arguments = removeFirstSignal(arguments);
-	char *token;
+	arguments++;//Remove the first signal of the string 
+	char* token;
+	char* tmp ;
 	char *prevToken = (char *)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
-	char *tmp;
+
 	ApartmentList newAptLst;
-	copyAptList(lst, &newAptLst);
+	copyAptList(lst, &newAptLst);//creating a new list
 	int num, count = 0;
 	const char s[2] = "-";
 	token = strtok(arguments, s);
-	while (token != NULL) {  /* walk through other tokens */
-		splitApartmentDetails(token, &tmp, ' ');
-		if (tmp != NULL)
-			sscanf(tmp, " %d", &num);
-		strcpy(prevToken, token);
-		count++;
-		splitToCommands(token, &newAptLst, num);
-		//sscanf(token, "%d", &num);
+	while (token != NULL) {  // walk through other tokens
+		splitCommandAndArgumentsByToken(token, &tmp, ' ');//
+		if (tmp != NULL)//if the command including numbers 
+			sscanf(tmp, " %d", &num);//Receiving the numbers 
+		count++;//In order to check if we got more than one of the print command
+		splitToCommands(token, &newAptLst, num,prevToken);
+		strcpy(prevToken, token);//Save the previous command
 		token = strtok(NULL, s);
 	}
-	if ((count == 1) && (prevToken == ENTER)) {
+	//if we have only 1 print command and the command is enter 
+	if ((count == 1) && (strcmp(prevToken,ENTER)==0)){
 		printListByApartmentCode(&newAptLst);
 	}
-	else if ((strcmp(prevToken, SORTED_BY_THE_HIGHEST_PRICE) == 0) && (strcmp(prevToken, SORTED_BY_THE_LOW_PRICE) == 0))
-	{
+	///The defult print command
+	else if ((strcmp(prevToken, SORTED_BY_THE_HIGHEST_PRICE) != 0) && (strcmp(prevToken, SORTED_BY_THE_LOW_PRICE) != 0))
 		printApartmentList(&newAptLst);
-	}
+	freeApartmentList(&newAptLst);
+	free(prevToken);
 }

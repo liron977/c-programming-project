@@ -30,7 +30,11 @@
     <ClCompile Include="search.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="fileUtils.c">
+=======
+    <ClCompile Include="stringUtils.c">
+>>>>>>> 1d78bb3e77dea7ca21e5885e9857ce0bf81ba7cd
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +51,11 @@
     <ClInclude Include="search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="fileUtils.h">
+=======
+    <ClInclude Include="stringUtils.h">
+>>>>>>> 1d78bb3e77dea7ca21e5885e9857ce0bf81ba7cd
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
