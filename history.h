@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "memoryUtils.h"
+#include "fileUtils.h"
 
 #define SHORT_TERM_HISTROY_SIZE 7
 
@@ -64,6 +65,16 @@ char *getPromptNumber(History *history, int promptNumber);
 void printHistory(History *history);
 
 /*
+* Read a history saved in a text file and add it to the history struct given
+*/
+void readHistoryFromTextFile(History *history, char *fname);
+
+/*
+* Write a given history struct to a text file with the givn file name
+*/
+void writeHistoryToTextFile(History *history, char *fname);
+
+/*
 * Frees a history database allocated memory
 */
 void freeHistory(History *history);
@@ -82,6 +93,12 @@ void makeEmptyShortHistoryArray(char *shortTermHistory[]);
 * Prints prompts with their index in the database
 */
 void printShortTermHistory(History *history);
+
+/*
+* Given a history database, writes all the prompts in the short term history database
+* to the given open (!) text file (!) fp. Prefixes each prompt in the file with its length
+*/
+void writeShortTermHistoryToTextFile(FILE *fp, History *history);
 
 /*
 * Frees the allocated memory of a short term history array
@@ -126,6 +143,12 @@ LongTermHistoryNode *getHistoryNodeAtIndex(LongTermHistoryList *lst, int index);
 * Prints all the commands kept in the given history list. Prints with index prefix for each command
 */
 void printHistoryList(LongTermHistoryList *lst);
+
+/*
+* Given a long term history list, writes all the prompts in the list
+* to the given open (!) text file (!) fp. Prefixes each prompt in the file with its length
+*/
+void writeLongTermHistoryListToTextFile(FILE *fp, LongTermHistoryList *lst);
 
 /*
 * Frees the allocated memory of a history list (frees each node's memory)

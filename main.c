@@ -14,6 +14,7 @@ Course's final project - console application to manage real estate apartments
 #include "apartment.h"
 #include "history.h"
 #include "apartment.h"
+#include "search.h"
 
 #define BUFFER_SIZE 50
 
@@ -47,7 +48,7 @@ void main()
 	makeEmptyHistory(&historyDB);
 	//read appartemnt from fille ,read history from file
 	//readApartmentsFromBinaryFile(&aptsList); // TODO implement
-	//readCommandHistoryFromFile(&historyDB); // TODO implement
+	readHistoryFromTextFile(&historyDB, "history.txt");
 
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
@@ -81,7 +82,7 @@ void main()
 		input = getInput();  // get next prompt
 	}
 	// end of program
-	//writeToPromtsTextFile(); // TODO implement
+	writeHistoryToTextFile(&historyDB, "history.txt");
 	//writeToApartmentsBinaryFile(); // TODO implement
 	freeApartmentList(&aptsList);
 	freeHistory(&historyDB);

@@ -51,6 +51,41 @@ void printHistory(History *history)
 	printShortTermHistory(history);
 }
 
+void readHistoryFromTextFile(History *history, char *fname)
+{
+	FILE *fin;
+	int length;
+	char *command;
+	fin = fopen(fname, "r");
+	if (!fin && errno == 2) // errno 2 is "No such file or directory" error - could happen if no previous runs occured or history was deleted
+		return;
+	verifyFileOpen(fin, fname);
+
+	while (fscanf(fin, "%d ", &length) != EOF)
+	{
+		command = (char *)ver_malloc(sizeof(char) * (length + 1));
+		fgets(command, length + 1, fin);
+		addPromptToHistoryDatabase(history, command);
+		free(command);
+	}
+	fclose(fin);
+}
+
+void writeHistoryToTextFile(History *history, char *fname)
+{	
+	FILE *fout;
+	fout = fopen(fname, "w");
+	verifyFileOpen(fout, fname);
+
+	// write to file from oldest command to newest
+	// start with long term history - older commands
+	writeLongTermHistoryListToTextFile(fout, history->longTermHistory);
+	
+	// continue to write short term history - newest commands
+	writeShortTermHistoryToTextFile(fout, history);
+	fclose(fout);
+}
+
 void freeHistory(History *history)
 {
 	freeShortTermHistroy(history->shortTermHistory);
@@ -82,6 +117,31 @@ void printShortTermHistory(History *history)
 		int longTermSize = history->longTermHistory->size;
 		for (i = 0; i < SHORT_TERM_HISTROY_SIZE; i++)
 			printf("%d: %s\n", longTermSize + i + 1, history->shortTermHistory[(history->shortTermHistoryIndex + i) % SHORT_TERM_HISTROY_SIZE]);
+	}
+}
+
+void writeShortTermHistoryToTextFile(FILE *fp, History *history)
+{
+	int i;
+	char *command;
+
+	// still not completed a full "loop" in short term history, write only until index, which is number of commands in database
+	if (history->totalSize < SHORT_TERM_HISTROY_SIZE)
+	{
+		for (i = 0; i < history->shortTermHistoryIndex; i++)
+		{
+			command = history->shortTermHistory[i];
+			fprintf(fp, "%d %s\n", strlen(command), command);
+		}
+	}
+	// completed more than one "loop" in short term history, write latest commands in this loop
+	else
+	{
+		for (i = 0; i < SHORT_TERM_HISTROY_SIZE; i++)
+		{
+			command = history->shortTermHistory[(history->shortTermHistoryIndex + i) % SHORT_TERM_HISTROY_SIZE];
+			fprintf(fp, "%d %s\n", strlen(command), command);
+		}
 	}
 }
 
@@ -153,6 +213,16 @@ void printHistoryList(LongTermHistoryList *lst)
 	for (i = 0; i < lst->size; i++)
 	{
 		printf("%d: %s\n", i + 1, curr->prompt);
+		curr = curr->next;
+	}
+}
+
+void writeLongTermHistoryListToTextFile(FILE *fp, LongTermHistoryList *lst)
+{
+	LongTermHistoryNode *curr = lst->head;
+	while (curr != NULL)
+	{
+		fprintf(fp, "%d %s\n", strlen(curr->prompt), curr->prompt);
 		curr = curr->next;
 	}
 }
