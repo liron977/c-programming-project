@@ -1,5 +1,5 @@
 ﻿#include "apartment.h"
-int apartmentCode = 0;
+unsigned int apartmentCode = 0;
 
 
 void printListByTheHighestPrice(ApartmentList *lst)
@@ -80,7 +80,6 @@ void copyAptList(ApartmentList *lst, ApartmentList *newLst)
 }
 void deleteApt(char *daysNum, ApartmentList *lst)
 {
-	unsigned int num;
 	int details = daysNum[strlen(daysNum) - 1] - '0';
 	removeApartmentsFromListByEntryDate(lst, details);
 }
@@ -106,7 +105,7 @@ void splitApartmentDetails(char *address, char **details, char token)
 char *removeFirstSignal(char *arguments)
 {
 	char *p = (char *)ver_malloc(sizeof(*p) * strlen(arguments));
-	int i;
+	unsigned int i;
 	for (i = 0; i < strlen(arguments); i++)
 	{
 		p[i] = arguments[i + 1];
@@ -116,14 +115,14 @@ char *removeFirstSignal(char *arguments)
 
 void addApt(char *arguments, ApartmentList *lst)
 {
-	char *details = ' ';
+	char *details;
 	int price;
 	short int numRooms, entryDay, entryMonth, entryYear;
 	char *apartmentDetails = (char *)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
 	strcpy(apartmentDetails, arguments);
 	char *contents_chopped = removeFirstSignal(apartmentDetails);
 	splitApartmentDetails(contents_chopped, &details, '\"');
-	sscanf(details, "%d%hd%hd%hd%hd%hd", &price, &numRooms, &entryDay, &entryMonth, &entryYear);
+	sscanf(details, "%d%hd%hd%hd%hd", &price, &numRooms, &entryDay, &entryMonth, &entryYear);
 	apartmentCode++;
 	Apartment *newApt = createNewApartment(apartmentCode, contents_chopped, price, numRooms, entryDay, entryMonth, entryYear);
 	insertApartmentToList(lst, newApt);

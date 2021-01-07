@@ -134,7 +134,7 @@ void findApt(char *arguments, ApartmentList *lst)
 	arguments = removeFirstSignal(arguments);
 	char *token;
 	char *prevToken = (char *)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
-	char *tmp = ' ';
+	char *tmp;
 	ApartmentList newAptLst;
 	copyAptList(lst, &newAptLst);
 	int num, count = 0;

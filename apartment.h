@@ -59,6 +59,8 @@ void deleteApt(char *daysNum, ApartmentList *lst);
 */
 void buyApt(char *codeApt, ApartmentList *lst);
 
+void splitApartmentDetails(char *address, char **details, char token);
+
 /*
 *Remove the first signal from the string
 */
