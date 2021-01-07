@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="apartment.c" />
+    <ClCompile Include="fileUtils.c" />
     <ClCompile Include="history.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="memoryUtils.c" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="apartment.h" />
+    <ClInclude Include="fileUtils.h" />
     <ClInclude Include="history.h" />
     <ClInclude Include="memoryUtils.h" />
     <ClInclude Include="search.h" />
