@@ -73,6 +73,9 @@ void readHistoryFromTextFile(History *history, char *fname)
 
 void writeHistoryToTextFile(History *history, char *fname)
 {	
+	if (history->totalSize == 0) // no history - nothing to write
+		return;
+
 	FILE *fout;
 	fout = fopen(fname, "w");
 	verifyFileOpen(fout, fname);

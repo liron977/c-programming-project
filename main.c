@@ -38,14 +38,14 @@ void runApartmentCommands(ApartmentList *lst, char *command, char *arguments, Hi
 void main()
 {
 	ApartmentList aptsList;
+	char apartmentsFileName[] = "apartments.bin";
 	History historyDB;
 	char historyFileName[] = "history.txt";
-	char apartmentsFileName[] = "apartments.bin";
 
 	makeEmptyApartmentList(&aptsList);
+	readApartmentsFromBinaryFile(&aptsList, apartmentsFileName);
+	
 	makeEmptyHistory(&historyDB);
-	//read appartemnt from fille ,read history from file
-	//readApartmentsFromBinaryFile(&aptsList); // TODO implement
 	readHistoryFromTextFile(&historyDB, historyFileName);
 
 	// start of program instructions prints
@@ -63,6 +63,7 @@ void main()
 		run wanted command according to arguments
 		save prompt if command needs to be saved
 		*/
+		printf(">> %s\n", input);
 		char *command, *arguments;
 		splitPromptToCommandAndArguments(input, &command, &arguments);
 		if (strcmp(command, HISTORY) == 0)
@@ -81,7 +82,7 @@ void main()
 	}
 	// end of program
 	writeHistoryToTextFile(&historyDB, historyFileName);
-	//writeToApartmentsBinaryFile(); // TODO implement
+	writeApartmentsToBinaryFile(&aptsList, apartmentsFileName);
 	freeApartmentList(&aptsList);
 	freeHistory(&historyDB);
 	free(input); // free last exit command given
@@ -144,7 +145,6 @@ void runApartmentCommandFromHistory(ApartmentList *lst, History *historyDB, char
 */
 void runApartmentCommands(ApartmentList *lst, char *command, char *arguments, History *historyDB, char *prompt)
 {
-	//printf(">> %s %s\n", command, arguments)//TO DO IN THE FILE
 	if (strcmp(command, FIND_APT) == 0)
 		findApt(arguments, lst);
 	else if (strcmp(command, ADD_APT) == 0)

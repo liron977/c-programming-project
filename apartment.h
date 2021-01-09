@@ -9,12 +9,15 @@
 #include <string.h>
 #include "memoryUtils.h"
 #include "stringUtils.h"
+#include "fileUtils.h"
 
 #define DB_ENTRY_MAX_STRING_LENGTH 11 // xx.xx.xxxx\0
 
+typedef unsigned char BYTE;
+
 typedef struct apartment
 {
-	unsigned int id;
+	short int id;
 	char *address;
 	int price;
 	short int numRooms;
@@ -35,6 +38,7 @@ typedef struct apartmentNode
 
 typedef struct apartmentList
 {
+	int size;
 	ApartmentNode *head;
 	ApartmentNode *tail;
 } ApartmentList;
@@ -70,7 +74,7 @@ void printListByTheHighestPrice(ApartmentList *lst);
 /*
 * Creates a new apartment.
 */
-Apartment *createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear);
+Apartment *createNewApartment(short int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear, time_t dbEntryDate);
 
 /*
 * Prints an the apartment code to the screen according to given instructions by the highest price to the low
@@ -149,7 +153,7 @@ ApartmentNode *getApartmentNodeBefore(ApartmentList *lst, int price);
 /*
 * Given an apartment list and an apartment id, removes the apartment with this id from the list. Updates references as needed
 */
-void removeApartmentFromListById(ApartmentList *lst, unsigned int id);
+void removeApartmentFromListById(ApartmentList *lst, short int id);
 
 /*
 * Given an apartment list and amount of days, removes from the list all apartments entered during this time. Updates references as needed
@@ -162,6 +166,16 @@ void removeApartmentsFromListByEntryDate(ApartmentList *lst, int numDays);
 * Assumes given node is in the list.
 */
 void removeApartmentNodeFromList(ApartmentList *lst, ApartmentNode *node);
+
+/*
+* Read an apartment list from binary file with given name, and put all apartments in given list
+*/
+void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname);
+
+/*
+* Write an apartment list to binary file with given name
+*/
+void writeApartmentsToBinaryFile(ApartmentList *lst, char *fname);
 
 /*
 * Frees the allocated memory of an apartment list (frees each node's memory)
