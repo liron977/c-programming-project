@@ -78,13 +78,13 @@ void searchByDate(int date, ApartmentList *lst)
 		apt = curr->apt;
 		currNext = curr->next;
 		if (apt->entryYear > yearDate)
-			removeApartmentFromListById(lst, apt->id);
+			removeApartmentNodeFromList(lst, curr);
 		else if (apt->entryYear == yearDate) {
 			if (apt->entryMonth > monthDate)
-				removeApartmentFromListById(lst, apt->id);
+				removeApartmentNodeFromList(lst, curr);
 			else if (apt->entryMonth == monthDate) {
 				if (apt->entryDay >= dayDate)
-					removeApartmentFromListById(lst, apt->id);
+					removeApartmentNodeFromList(lst, curr);
 			}
 		}
 		curr = currNext;

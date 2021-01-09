@@ -39,11 +39,14 @@ void main()
 {
 	ApartmentList aptsList;
 	History historyDB;
+	char historyFileName[] = "history.txt";
+	char apartmentsFileName[] = "apartments.bin";
+
 	makeEmptyApartmentList(&aptsList);
 	makeEmptyHistory(&historyDB);
 	//read appartemnt from fille ,read history from file
 	//readApartmentsFromBinaryFile(&aptsList); // TODO implement
-	readHistoryFromTextFile(&historyDB, "history.txt");
+	readHistoryFromTextFile(&historyDB, historyFileName);
 
 	// start of program instructions prints
 	puts("Please enter one of the following commands :");
@@ -77,7 +80,7 @@ void main()
 		input = getInput();  // get next prompt
 	}
 	// end of program
-	writeHistoryToTextFile(&historyDB, "history.txt");
+	writeHistoryToTextFile(&historyDB, historyFileName);
 	//writeToApartmentsBinaryFile(); // TODO implement
 	freeApartmentList(&aptsList);
 	freeHistory(&historyDB);

@@ -1,5 +1,4 @@
 #include "stringUtils.h"
-#define BUFFER_SIZE 50
 
 void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArguments)
 {
@@ -12,6 +11,7 @@ void splitPromptToCommandAndArguments(char* prompt, char** pCommand, char** pArg
 		splitCommandAndArgumentsByToken(command, pArguments, ' ');
 	*pCommand = command;
 }
+
 void splitCommandAndArgumentsByToken(char* command, char** pArguments, char token)
 {
 	char* index = strchr(command, token);
@@ -23,6 +23,7 @@ void splitCommandAndArgumentsByToken(char* command, char** pArguments, char toke
 		*pArguments = index + 1;
 	}
 }
+
 char* strReplace(char* orig, char* str1, char* str2)
 {
 	char* result, * resultInsertPoint, * tmp;
@@ -51,6 +52,7 @@ char* strReplace(char* orig, char* str1, char* str2)
 	strcpy(resultInsertPoint, orig);
 	return result;
 }
+
 int countNumberOfReplacementStrings(char* str, char* repl)
 {
 	int count;

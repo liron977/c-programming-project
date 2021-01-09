@@ -50,16 +50,17 @@ void copyAptList(ApartmentList *lst, ApartmentList *newLst)
 	}
 }
 
-void deleteApt(char *daysNum, ApartmentList *lst)
+void deleteApt(char *arguments, ApartmentList *lst)
 {
-	int details = daysNum[strlen(daysNum) - 1] - '0';//In order to get the number from the string 
-	removeApartmentsFromListByEntryDate(lst, details);
+	int numDays;
+	sscanf(arguments, " %d", &numDays); // get the number from the string 
+	removeApartmentsFromListByEntryDate(lst, numDays);
 }
 
 void buyApt(char *codeApt, ApartmentList *lst)
 {
 	unsigned int num;
-	sscanf(codeApt, " %d", &num);//In order to get the code from the string 
+	sscanf(codeApt, "%d", &num);//In order to get the code from the string 
 	removeApartmentFromListById(lst, num);
 }
 
@@ -79,6 +80,7 @@ void addApt(char *arguments, ApartmentList *lst)
 	Apartment *newApt = createNewApartment(apartmentCode, apartmentAddress, price, numRooms, entryDay, entryMonth, entryYear);
 	insertApartmentToList(lst, newApt);
 }
+
 Apartment *createNewApartment(unsigned int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear)
 {
 	time_t curtime;
@@ -111,6 +113,7 @@ void printApartment(Apartment *apt)
 	printf("Entry date: %hd.%hd.%hd\n", apt->entryDay, apt->entryMonth, apt->entryYear);
 	printf("Database entry date: %s\n", dbEntryDate);
 }
+
 void printListByApartmentCode(ApartmentList *lst)
 {
 	// print an apartment according to instructions
@@ -123,6 +126,7 @@ void printListByApartmentCode(ApartmentList *lst)
 	}
 
 }
+
 void freeApartment(Apartment *apt)
 {
 	free(apt->address);

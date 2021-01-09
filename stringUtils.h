@@ -7,7 +7,7 @@
 #include <string.h>
 #include "memoryUtils.h"
 
-
+#define BUFFER_SIZE 50
 
 /*
 * Splits a given prompt to it's command and arguments.
