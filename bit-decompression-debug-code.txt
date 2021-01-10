@@ -1,0 +1,16 @@
+debug code for bits decompression:
+
+BYTE arr[3] = { 0 };
+short int entryDayLastBit, entryDay, entryYearLast4Bit, entryYear;
+
+entryDay = arr[0] & 0x0F; // xxxx abcd --> 0000 abcd (mask = 0000 1111)
+entryDayLastBit = arr[1] >> 7; // exxxxxxx --> 0000000e
+entryDay = (entryDay << 1); // abcd0
+entryDay |= entryDayLastBit; // abcd0 | 0000e
+
+entryYear = arr[1] & 0x07; // xxxxxabc-- > 00000abc (mask = 0000 0111)
+entryYear <<= 4; // 00000abc --> 0abc0000
+entryYearLast4Bit = arr[2] >> 4; // defg0000 --> 0000defg
+entryYear |= entryYearLast4Bit; // 0abc0000 | 0000defg  --> 0abcdefg
+
+		

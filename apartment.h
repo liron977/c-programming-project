@@ -12,6 +12,7 @@
 #include "fileUtils.h"
 
 #define DB_ENTRY_MAX_STRING_LENGTH 11 // xx.xx.xxxx\0
+#define COMPRESSED_BITS_ARRAY_SIZE 3
 
 typedef unsigned char BYTE;
 
@@ -45,11 +46,10 @@ typedef struct apartmentList
 
 /***** APARTMENT FUNCTIONS ******/
 
-
 /*
-*Copy the apartment list to the new apartment list
+* Add a new apartment to the appartment list
 */
-void copyAptList(ApartmentList *lst, ApartmentList *newLst);
+void addApt(char *arguments, ApartmentList *lst);
 
 /*
 *Remove from the apartment list all the apartment from the last days(according to dateNum)
@@ -62,29 +62,9 @@ void deleteApt(char *daysNum, ApartmentList *lst);
 void buyApt(char *codeApt, ApartmentList *lst);
 
 /*
-*Print the Apartment list with all the apartment data orted by the lowest price to the highest price
-*/
-void printApartmentList(ApartmentList *lst);
-
-/*
-*Print the Apartment list sorted by the highest price to the lowest price
-*/
-void printListByTheHighestPrice(ApartmentList *lst);
-
-/*
 * Creates a new apartment.
 */
 Apartment *createNewApartment(short int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear, time_t dbEntryDate);
-
-/*
-* Prints an the apartment code to the screen according to given instructions by the highest price to the low
-*/
-void printApartmentCodeByTheHighestPrice(ApartmentList* lst);
-
-/*
-* Prints an the apartment code to the screen according to given instructions , the defult print command 
-*/
-void printListByApartmentCode(ApartmentList *lst);
 
 /*
 * Prints an apartment to the screen according to given instructions
@@ -95,11 +75,6 @@ void printApartment(Apartment *apt);
 * Frees the allocated memory of an apartment
 */
 void freeApartment(Apartment *apt);
-
-/*
-* Add a new apartment to the appartment list
-*/
-void addApt(char *arguments, ApartmentList *lst);
 
 
 /***** APARTMENTLIST FUNCTIONS ******/
@@ -113,6 +88,11 @@ void makeEmptyApartmentList(ApartmentList *lst);
 * Check if an apartment list is empty (length = 0). Returns true if empty, false otherwise
 */
 bool isEmptyApartmentList(ApartmentList *lst);
+
+/*
+*Copy the apartment list to the new apartment list
+*/
+void copyAptList(ApartmentList *lst, ApartmentList *newLst);
 
 /*
 * Creates a new apartment list node that can be added to a list.
@@ -168,6 +148,26 @@ void removeApartmentsFromListByEntryDate(ApartmentList *lst, int numDays);
 void removeApartmentNodeFromList(ApartmentList *lst, ApartmentNode *node);
 
 /*
+*Print the Apartment list with all the apartment data orted by the lowest price to the highest price
+*/
+void printApartmentList(ApartmentList *lst);
+
+/*
+*Print the Apartment list sorted by the highest price to the lowest price
+*/
+void printListByTheHighestPrice(ApartmentList *lst);
+
+/*
+* Prints an the apartment code to the screen according to given instructions by the highest price to the low
+*/
+void printApartmentCodeByTheHighestPrice(ApartmentList *lst);
+
+/*
+* Prints an the apartment code to the screen according to given instructions , the defult print command
+*/
+void printListByApartmentCode(ApartmentList *lst);
+
+/*
 * Read an apartment list from binary file with given name, and put all apartments in given list
 */
 void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname);
@@ -176,6 +176,12 @@ void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname);
 * Write an apartment list to binary file with given name
 */
 void writeApartmentsToBinaryFile(ApartmentList *lst, char *fname);
+
+/*
+* This function compresses some of a given apartment's fields, and writes them to an open (!) binary write file.
+* Current compressed fields: numRooms, entryDay, entryMonth, entryYear
+*/
+void writeCompressedApartmentFieldsToBinaryFile(FILE *fout, Apartment *apt);
 
 /*
 * Frees the allocated memory of an apartment list (frees each node's memory)

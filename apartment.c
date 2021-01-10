@@ -1,53 +1,23 @@
 ﻿#include "apartment.h"
-short int apartmentCode = 0;
+short int apartmentCode = 1;
 
-void printApartmentCodeByTheHighestPrice(ApartmentList* lst)
+void addApt(char *arguments, ApartmentList *lst)
 {
-	ApartmentNode* curr = lst->tail;
-	while (curr != NULL)
-	{
-		// print an apartment according to instructions
-			puts("Apt details:");
-			printf("Code: %hd\n", curr->apt->id);
-		curr = curr->prev;
-	}
-}
+	char *details;
+	int price;
+	short int numRooms, entryDay, entryMonth, entryYear;
+	time_t dbEntryDate = time(NULL);;
 
-void printListByTheHighestPrice(ApartmentList *lst)
-{
-	ApartmentNode *curr = lst->tail;
-	while (curr != NULL)
-	{
-		printApartment(curr->apt);
-		curr = curr->prev;
-	}
-}
+	arguments++; //Remove the rirst signal
+	splitCommandAndArgumentsByToken(arguments, &details, '\"'); //Split the argument
+	char *apartmentAddress = (char *)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
+	strcpy(apartmentAddress, arguments);
 
-void printApartmentList(ApartmentList *lst)
-{
-	ApartmentNode *curr = lst->head;
-	while (curr != NULL)
-	{
-		printApartment(curr->apt);
-		curr = curr->next;
-	}
-}
-
-void copyAptList(ApartmentList *lst, ApartmentList *newLst)
-{
-
-	makeEmptyApartmentList(newLst);
-	ApartmentNode *curr = lst->head;
-	Apartment *aptNewList;
-	Apartment *tmp;
-	while (curr != NULL){
-		tmp = curr->apt;
-		char *newAddress = (char *)ver_malloc(sizeof(char) * strlen(tmp->address) + 1);//in or
-		strcpy(newAddress, tmp->address);
-		aptNewList = createNewApartment(tmp->id, newAddress, tmp->price, tmp->numRooms, tmp->entryDay, tmp->entryMonth, tmp->entryYear, tmp->dbEntryDate);
-		insertApartmentToList(newLst, aptNewList);
-		curr = curr->next;
-	}
+	sscanf(details, "%d%hd%hd%hd%hd", &price, &numRooms, &entryDay, &entryMonth, &entryYear);
+	
+	Apartment *newApt = createNewApartment(apartmentCode, apartmentAddress, price, numRooms, entryDay, entryMonth, entryYear, dbEntryDate);
+	insertApartmentToList(lst, newApt);
+	apartmentCode++;
 }
 
 void deleteApt(char *arguments, ApartmentList *lst)
@@ -62,24 +32,6 @@ void buyApt(char *codeApt, ApartmentList *lst)
 	short int num;
 	sscanf(codeApt, "%hd", &num);//In order to get the code from the string 
 	removeApartmentFromListById(lst, num);
-}
-
-void addApt(char *arguments, ApartmentList *lst)
-{
-	char *details;
-	int price;
-	short int numRooms, entryDay, entryMonth, entryYear;
-	time_t dbEntryDate = time(NULL);;
-
-	arguments++;//Remove the rirst signal
-	splitCommandAndArgumentsByToken(arguments, &details, '\"');//Split the argument
-	char* apartmentAddress = (char*)ver_malloc(sizeof(char) * (strlen(arguments) + 1));
-	strcpy(apartmentAddress, arguments);
-
-	sscanf(details, "%d%hd%hd%hd%hd", &price, &numRooms, &entryDay, &entryMonth, &entryYear);
-	apartmentCode++;
-	Apartment *newApt = createNewApartment(apartmentCode, apartmentAddress, price, numRooms, entryDay, entryMonth, entryYear, dbEntryDate);
-	insertApartmentToList(lst, newApt);
 }
 
 Apartment *createNewApartment(short int id, char *address, int price, short int numRoom, short int entryDay, short int entryMonth, short int entryYear, time_t dbEntryDate)
@@ -113,19 +65,6 @@ void printApartment(Apartment *apt)
 	printf("Database entry date: %s\n", dbEntryDate);
 }
 
-void printListByApartmentCode(ApartmentList *lst)
-{
-	// print an apartment according to instructions
-	ApartmentNode *curr = lst->head;
-	while (curr != NULL)
-	{
-		puts("Apt details:");
-		printf("Code: %hd\n", curr->apt->id);
-		curr = curr->next;
-	}
-
-}
-
 void freeApartment(Apartment *apt)
 {
 	free(apt->address);
@@ -141,6 +80,23 @@ void makeEmptyApartmentList(ApartmentList *lst)
 bool isEmptyApartmentList(ApartmentList *lst)
 {
 	return lst->head == NULL;
+}
+
+void copyAptList(ApartmentList *lst, ApartmentList *newLst)
+{
+
+	makeEmptyApartmentList(newLst);
+	ApartmentNode *curr = lst->head;
+	Apartment *aptNewList;
+	Apartment *tmp;
+	while (curr != NULL) {
+		tmp = curr->apt;
+		char *newAddress = (char *)ver_malloc(sizeof(char) * strlen(tmp->address) + 1);//in or
+		strcpy(newAddress, tmp->address);
+		aptNewList = createNewApartment(tmp->id, newAddress, tmp->price, tmp->numRooms, tmp->entryDay, tmp->entryMonth, tmp->entryYear, tmp->dbEntryDate);
+		insertApartmentToList(newLst, aptNewList);
+		curr = curr->next;
+	}
 }
 
 ApartmentNode *createNewApartmentListNode(Apartment *apt, ApartmentNode *next, ApartmentNode *prev)
@@ -279,6 +235,51 @@ void removeApartmentNodeFromList(ApartmentList *lst, ApartmentNode *node)
 	lst->size = lst->size - 1;
 }
 
+void printApartmentList(ApartmentList *lst)
+{
+	ApartmentNode *curr = lst->head;
+	while (curr != NULL)
+	{
+		printApartment(curr->apt);
+		curr = curr->next;
+	}
+}
+
+void printListByTheHighestPrice(ApartmentList *lst)
+{
+	ApartmentNode *curr = lst->tail;
+	while (curr != NULL)
+	{
+		printApartment(curr->apt);
+		curr = curr->prev;
+	}
+}
+
+void printApartmentCodeByTheHighestPrice(ApartmentList *lst)
+{
+	ApartmentNode *curr = lst->tail;
+	while (curr != NULL)
+	{
+		// print an apartment according to instructions
+		puts("Apt details:");
+		printf("Code: %hd\n", curr->apt->id);
+		curr = curr->prev;
+	}
+}
+
+void printListByApartmentCode(ApartmentList *lst)
+{
+	// print an apartment according to instructions
+	ApartmentNode *curr = lst->head;
+	while (curr != NULL)
+	{
+		puts("Apt details:");
+		printf("Code: %hd\n", curr->apt->id);
+		curr = curr->next;
+	}
+
+}
+
 void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname)
 {
 	short int id, addressLength, numRooms, entryDay, entryMonth, entryYear;
@@ -286,7 +287,7 @@ void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname)
 	int size, price, i;
 	time_t dbEntryDate;
 	char *address;
-	BYTE arr[3];
+	BYTE compressedBitsArr[COMPRESSED_BITS_ARRAY_SIZE];
 	Apartment *apt;
 
 	FILE *fin = fopen(fname, "rb");
@@ -295,9 +296,6 @@ void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname)
 	verifyFileOpen(fin, fname);
 
 	fread(&size, sizeof(size), 1, fin);
-
-	if (size == 0) // no apartments in binary file - nothing to do
-		return;
 
 	for (i = 0; i < size; i++)
 	{
@@ -310,59 +308,39 @@ void readApartmentsFromBinaryFile(ApartmentList *lst, char *fname)
 		fread(&price, sizeof(price), 1, fin);
 		fread(&dbEntryDate, sizeof(dbEntryDate), 1, fin);
 
-		// de-compress back from bits
-
-		// read compressed bytes of num rooms and entry date (day/month/year)
-		fread(arr, sizeof(BYTE), 3, fin);
-
-		// de-compress num rooms - abcd 1110 --> 0000 abcd
-		numRooms = arr[0] >> 4;
+		// decompress fields num rooms and entry date (day/month/year) back from bits
+		fread(compressedBitsArr, sizeof(BYTE), COMPRESSED_BITS_ARRAY_SIZE, fin);
+		
+		// decompress num rooms - abcd XXXX --> 0000 abcd
+		numRooms = compressedBitsArr[0] >> 4;
 
 		/*
-		* de-compress entry day
-		* 0100 abcd --> 0000 abcd (mask = 0000 1111)
-		* abcd -> abcd0
-		* e0100001 --> 0000000e
+		* decompress entry day - split between 2 bytes (XXXXabcd eXXXXXXX):
+		* XXXX abcd --> 0000 abcd (mask = 0000 1111)
+		* abcd --> abcd0
+		* eXXXXXXX --> 0000000e
 		* abcd0 | 0000e --> abcde
 		*/
-		entryDay = ((arr[0] & 0x0F) << 1) | (arr[1] >> 7);
+		entryDay = ((compressedBitsArr[0] & 0x0F) << 1) | (compressedBitsArr[1] >> 7);
 
-		/* DEBUG CODE
-		short int entryDayLastBit;
-		entryDay = arr[0] & 0x0F; // 0100 abcd --> 0000 abcd (mask = 0000 1111)
-		entryDayLastBit = arr[1] >> 7; // e0100001 --> 0000000e
-		entryDay = (entryDay << 1); // abcd0
-		entryDay |= entryDayLastBit; // abcd0 | 0000e
-
-		entryDay = (arr[0] & 0x0F) << 1;
-		entryDay |= (arr[1] >> 7);
-		*/
-		
-		// de-compress entry month - 1abcd001 --> 0001abcd --> 0000abcd (mask = 0000 1111)
-		entryMonth = (arr[1] >> 3) & 0x0F;
+		// decompress entry month - XabcdXXX --> 000Xabcd --> 0000abcd (mask = 0000 1111)
+		entryMonth = (compressedBitsArr[1] >> 3) & 0x0F;
 		
 		/*
-		* de-compress entry year (00100abc defg0000)
-		* 00100abc-- > 00000abc (mask = 0000 0111)
+		* decompress entry year - split between 2 bytes (XXXXXabc defgXXXX):
+		* XXXXXabc --> 00000abc (mask = 0000 0111)
 		* 00000abc --> 0abc0000
-		* defg0000 --> 0000defg
+		* defgXXXX --> 0000defg
 		* 0abc0000 | 0000defg  --> 0abcdefg
 		*/
-		entryYear = ((arr[1] & 0x07) << 4) | (arr[2] >> 4);
-
-		/* DEBUG CODE
-		short int entryYearLast4Bit;
-		entryYear = arr[1] & 0x07; // 00100abc-- > 00000abc (mask = 0000 0111)
-		entryYear <<= 4; // 00000abc --> 0abc0000
-		entryYearLast4Bit = arr[2] >> 4; // defg0000 --> 0000defg
-		entryYear |= entryYearLast4Bit; // 0abc0000 | 0000defg  --> 0abcdefg
-		*/
+		entryYear = ((compressedBitsArr[1] & 0x07) << 4) | (compressedBitsArr[2] >> 4);
 
 		apt = createNewApartment(id, address, price, numRooms, entryDay, entryMonth, entryYear, dbEntryDate);
 		insertApartmentToList(lst, apt);
 
 		highestId = id > highestId ? id : highestId;
 	}
+	fclose(fin);
 	apartmentCode = highestId + 1; // global counter initialized to next code, after last apartment in file
 }
 
@@ -390,27 +368,32 @@ void writeApartmentsToBinaryFile(ApartmentList *lst, char *fname)
 		fwrite(&(curr->apt->dbEntryDate), sizeof(curr->apt->dbEntryDate), 1, fout);
 
 		// now write num rooms and entry date (day/month/year) as compressed byte array
-		BYTE arr[3] = { 0 };
-
-		// write compressed num rooms
-		arr[0] |= (curr->apt->numRooms << 4); 
-		
-		// write compressed entry day - entry day is split between 2 bytes
-		arr[0] |= (curr->apt->entryDay >> 1);
-		arr[1] |= (curr->apt->entryDay << 7);
-
-		// write compressed entry month
-		arr[1] |= (curr->apt->entryMonth << 3);
-
-		// write compressed entry year - entry year is split between 2 bytes
-		arr[1] |= (curr->apt->entryYear >> 4);
-		arr[2] |= (curr->apt->entryYear << 4);
-
-		fwrite(arr, sizeof(BYTE), 3, fout);
+		writeCompressedApartmentFieldsToBinaryFile(fout, curr->apt);
 
 		curr = curr->next;
 	}
 	fclose(fout);
+}
+
+void writeCompressedApartmentFieldsToBinaryFile(FILE *fout, Apartment *apt)
+{
+	BYTE compressedBitsArr[COMPRESSED_BITS_ARRAY_SIZE] = { 0 };
+
+	// write compressed num rooms
+	compressedBitsArr[0] |= (apt->numRooms << 4);
+
+	// write compressed entry day - entry day is split between 2 bytes
+	compressedBitsArr[0] |= (apt->entryDay >> 1);
+	compressedBitsArr[1] |= (apt->entryDay << 7);
+
+	// write compressed entry month
+	compressedBitsArr[1] |= (apt->entryMonth << 3);
+
+	// write compressed entry year - entry year is split between 2 bytes
+	compressedBitsArr[1] |= (apt->entryYear >> 4);
+	compressedBitsArr[2] |= (apt->entryYear << 4);
+
+	fwrite(compressedBitsArr, sizeof(BYTE), COMPRESSED_BITS_ARRAY_SIZE, fout);
 }
 
 void freeApartmentList(ApartmentList *lst)
