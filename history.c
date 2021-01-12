@@ -27,7 +27,7 @@ char *getLastPrompt(History *history)
 {
 	if (history->totalSize == 0)
 		return NULL; // no prompts were given yet
-	return history->shortTermHistory[(history->shortTermHistoryIndex - 1) % SHORT_TERM_HISTROY_SIZE];
+	return history->shortTermHistory[(history->shortTermHistoryIndex + SHORT_TERM_HISTROY_SIZE - 1) % SHORT_TERM_HISTROY_SIZE];
 }
 
 char *getPromptNumber(History *history, int promptNumber)
@@ -41,7 +41,7 @@ char *getPromptNumber(History *history, int promptNumber)
 		prompt = promptNode->prompt;
 	}
 	else // prompt is in short term history
-		prompt = history->shortTermHistory[(promptNumber - 1) % SHORT_TERM_HISTROY_SIZE]; // index starts at 0, prompt numbers start at 1
+		prompt = history->shortTermHistory[(promptNumber + SHORT_TERM_HISTROY_SIZE - 1) %  SHORT_TERM_HISTROY_SIZE]; // index starts at 0, prompt numbers start at 1
 	return prompt;
 }
 
@@ -134,7 +134,7 @@ void writeShortTermHistoryToTextFile(FILE *fp, History *history)
 		for (i = 0; i < history->shortTermHistoryIndex; i++)
 		{
 			command = history->shortTermHistory[i];
-			fprintf(fp, "%d %s\n", strlen(command), command);
+			fprintf(fp, "%zd %s\n", strlen(command), command);
 		}
 	}
 	// completed more than one "loop" in short term history, write latest commands in this loop
@@ -143,7 +143,7 @@ void writeShortTermHistoryToTextFile(FILE *fp, History *history)
 		for (i = 0; i < SHORT_TERM_HISTROY_SIZE; i++)
 		{
 			command = history->shortTermHistory[(history->shortTermHistoryIndex + i) % SHORT_TERM_HISTROY_SIZE];
-			fprintf(fp, "%d %s\n", strlen(command), command);
+			fprintf(fp, "%zd %s\n", strlen(command), command);
 		}
 	}
 }
@@ -225,7 +225,7 @@ void writeLongTermHistoryListToTextFile(FILE *fp, LongTermHistoryList *lst)
 	LongTermHistoryNode *curr = lst->head;
 	while (curr != NULL)
 	{
-		fprintf(fp, "%d %s\n", strlen(curr->prompt), curr->prompt);
+		fprintf(fp, "%zd %s\n", strlen(curr->prompt), curr->prompt);
 		curr = curr->next;
 	}
 }

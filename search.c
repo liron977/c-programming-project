@@ -26,9 +26,9 @@ void MinPrice(int price, ApartmentList *lst)
 		currNext = curr->next;
 		if (curr->apt->price < price)
 		{
-			removeApartmentNodeFromList(lst, curr);
+			removeApartmentNodeFromList(lst, curr);	
 		}
-		curr = curr->next;
+		curr = currNext;
 	}
 }
 void minNumOfRooms(int numOfRooms, ApartmentList *lst)

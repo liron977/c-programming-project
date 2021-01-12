@@ -91,7 +91,7 @@ void copyAptList(ApartmentList *lst, ApartmentList *newLst)
 	Apartment *tmp;
 	while (curr != NULL) {
 		tmp = curr->apt;
-		char *newAddress = (char *)ver_malloc(sizeof(char) * strlen(tmp->address) + 1);//in or
+		char *newAddress = (char *)ver_malloc(sizeof(char) * strlen(tmp->address) + 1);
 		strcpy(newAddress, tmp->address);
 		aptNewList = createNewApartment(tmp->id, newAddress, tmp->price, tmp->numRooms, tmp->entryDay, tmp->entryMonth, tmp->entryYear, tmp->dbEntryDate);
 		insertApartmentToList(newLst, aptNewList);

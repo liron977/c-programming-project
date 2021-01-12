@@ -97,6 +97,10 @@ void runLastCommandFromHistory(ApartmentList *lst, History *historyDB)
 	char *lastPrompt = getLastPrompt(historyDB);
 	if (lastPrompt != NULL)  // last prompt found
 		runApartmentCommandFromHistory(lst, historyDB, lastPrompt);
+	else
+	{
+		printf("You haven't run any command yet :( ");
+	}
 }
 
 /*
@@ -124,6 +128,10 @@ void runCommandNumberFromHistory(ApartmentList *lst, char *command, char *argume
 			runApartmentCommandFromHistory(lst, historyDB, replacePrompt);
 			free(replacePrompt); // replaced prompt is like new input - needs to be freed after use
 		}
+	}
+	else
+	{
+		printf("Invalid command number :( ");
 	}
 }
 
