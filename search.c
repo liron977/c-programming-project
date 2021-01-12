@@ -156,6 +156,12 @@ void findApt(char *arguments, ApartmentList *lst)
 		strcpy(prevToken, token);//Save the previous command
 		token = strtok(NULL, s);
 	}
+	if (isEmptyApartmentList(&newAptLst))
+	{
+		puts("No apartments found that answer the query. Don't forget to bring a towel!");
+		return;
+	}
+
 	//if we have only 1 print command and the command is enter 
 	if ((count == 1) && (strcmp(prevToken,ENTER)==0)){
 		printListByApartmentCode(&newAptLst);

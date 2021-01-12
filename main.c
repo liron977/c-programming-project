@@ -99,7 +99,7 @@ void runLastCommandFromHistory(ApartmentList *lst, History *historyDB)
 		runApartmentCommandFromHistory(lst, historyDB, lastPrompt);
 	else
 	{
-		printf("You haven't run any command yet :( ");
+		puts("You haven't run any command yet :( ");
 	}
 }
 
@@ -131,7 +131,7 @@ void runCommandNumberFromHistory(ApartmentList *lst, char *command, char *argume
 	}
 	else
 	{
-		printf("Invalid command number :( ");
+		puts("Invalid command number :( ");
 	}
 }
 

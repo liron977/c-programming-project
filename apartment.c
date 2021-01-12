@@ -23,7 +23,7 @@ void addApt(char *arguments, ApartmentList *lst)
 void deleteApt(char *arguments, ApartmentList *lst)
 {
 	int numDays;
-	sscanf(arguments, " %d", &numDays); // get the number from the string 
+	sscanf(arguments, "%*s %d", &numDays); // get the number from the string 
 	removeApartmentsFromListByEntryDate(lst, numDays);
 }
 
@@ -168,15 +168,15 @@ ApartmentNode *getApartmentNodeBefore(ApartmentList *lst, int price)
 {
 	if (isEmptyApartmentList(lst))
 		return NULL;
-	else if (price <= lst->head->apt->price)  // price is smaller than minimum in list - should be new head
+	else if (price < lst->head->apt->price)  // price is smaller than minimum in list - should be new head
 		return NULL;
 	else if (price >= lst->tail->apt->price)  // price is greater than maximum in list. Return the current maximum (tail)
 		return lst->tail;
-	else  // list_min < price < list_max - find the first "middle" apartment where price < apt->price
+	else  // list_min <= price < list_max - find the first "middle" apartment where price < apt->price
 	{
 		ApartmentNode *curr = lst->head;
 		// skip over all apartments that have lower prices
-		while (curr != NULL && curr->apt->price < price)
+		while (curr != NULL && curr->apt->price <= price)
 			curr = curr->next;
 		return curr->prev; // note: curr can't be null here, so its valid to access prev
 	}
@@ -191,7 +191,7 @@ void removeApartmentFromListById(ApartmentList *lst, short int id)
 		removeApartmentNodeFromList(lst, curr);
 	else
 	{
-		printf("Sorry, this apartment id does not exist");
+		puts("Sorry, this apartment id does not exist");
 	}
 }
 
